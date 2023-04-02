@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <ApplicationIcon>suyaa.ico</ApplicationIcon>
     <Product>Suyaa Script Shell</Product>
+    <PackageId></PackageId>
+    <Version>1.0.2304.1</Version>
+    <AssemblyName>syc</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

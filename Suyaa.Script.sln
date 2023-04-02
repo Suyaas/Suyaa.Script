@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{A2EC4EE5-A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleScriptHost", "Demo\SimpleScriptHost\SimpleScriptHost.csproj", "{CB52698F-613B-4FB8-89E3-9A21DEACDCF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sychost", "Demo\sychost\sychost.csproj", "{0677E454-5665-4016-8C6A-B1306A425A7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuyaaScriptShell", "Demo\sychost\SuyaaScriptShell.csproj", "{0677E454-5665-4016-8C6A-B1306A425A7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
