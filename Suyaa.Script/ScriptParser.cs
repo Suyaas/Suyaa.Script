@@ -28,7 +28,7 @@ namespace Suyaa.Script
         /// <summary>
         /// 脚本解析器名称集合
         /// </summary>
-        public static List<string> ScriptCalculateNames = new List<string>() { "!" };
+        public static List<string> ScriptCalculateNames = new List<string>() { "!", "calculate" };
 
         // 创建算式
         private static ScriptFunction CreateFormulaFunction(string name, object? arg1, object? arg2)
@@ -201,6 +201,12 @@ namespace Suyaa.Script
                     char chr = script[i];
                     switch (chr)
                     {
+                        case '\t':
+                            #region [=====TAB=====]
+                            if (isEscape) throw new Exception($"意外的字符'Tab'。");
+                            if (inString) throw new Exception($"意外的字符'Tab'。");
+                            #endregion
+                            break;
                         case ' ':
                             #region [=====空格=====]
                             if (isEscape) throw new Exception($"意外的字符'{chr}'。");
