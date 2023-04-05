@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>1.0.2304.1</Version>
+    <Version>1.0.2304.2</Version>
     <Authors>Wenling Lianyi Network Technology Co., Ltd.</Authors>
     <Description>基于.Net Standard 2.1并与C#语言高度兼容的功能性函数式脚本语言</Description>
     <PackageProjectUrl>https://github.com/Suyaas/Suyaa.Script</PackageProjectUrl>
