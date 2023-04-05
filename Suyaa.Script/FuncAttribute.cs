@@ -13,12 +13,12 @@ namespace Suyaa.Script
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 描述
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// 函数定义

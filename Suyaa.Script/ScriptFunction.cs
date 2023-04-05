@@ -27,7 +27,7 @@ namespace Suyaa.Script
         /// <summary>
         /// 函数名称
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 参数集合

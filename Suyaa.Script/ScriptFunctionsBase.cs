@@ -10,12 +10,16 @@ namespace Suyaa.Script
     /// <summary>
     /// 函数集合
     /// </summary>
-    public class ScriptFunctionsBase : Dictionary<string, Func<ScriptVariables, object?>>, IDisposable, IScriptFunctionRegistr
+    public class ScriptFunctionsBase : Dictionary<string, Func<ScriptVariables, object?>>, IDisposable, IScriptRegistr
     {
+        // 关联引擎
+        private ScriptEngine? _engine;
+        private List<IScriptRegistr> _registrs;
+
         /// <summary>
         /// 获取关联引擎
         /// </summary>
-        public ScriptEngine Engine { get; private set; }
+        public ScriptEngine Engine => _engine ?? throw new ScriptException($"关联引擎为空");
 
         /// <summary>
         /// 函数集合
@@ -23,6 +27,7 @@ namespace Suyaa.Script
         /// <exception cref="ScriptException"></exception>
         public ScriptFunctionsBase()
         {
+            _registrs = new List<IScriptRegistr>();
             // 加
             this.Reg("+", args =>
             {
@@ -73,9 +78,11 @@ namespace Suyaa.Script
         /// 设置脚本引擎
         /// </summary>
         /// <param name="engine"></param>
-        public void SetEngine(ScriptEngine engine)
+        public void SetEngine(ScriptEngine? engine)
         {
-            this.Engine = engine;
+            _engine = engine;
+            // 同步设置到注册器中
+            foreach (var registr in _registrs) registr.SetEngine(engine);
         }
 
         // 获取函数名称
@@ -134,8 +141,14 @@ namespace Suyaa.Script
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public ScriptFunctionsBase Reg(string? name, System.Type type)
+        public ScriptFunctionsBase Reg(string? name, System.Type type, IScriptRegistr? registr = null)
         {
+            // 判断接口实现
+            if (!type.HasInterface<IScriptRegistr>()) throw new ScriptException($"类型'{type.FullName}'未实现'IScriptFunctionRegistr'接口");
+            // 初始化对象
+            if (registr is null) registr = (IScriptRegistr)Activator.CreateInstance(type);
+            // 设置脚本引擎
+            registr.SetEngine(_engine);
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
             foreach (var method in methods)
             {
@@ -156,11 +169,12 @@ namespace Suyaa.Script
                         {
                             ps[i] = GetValue(this.Engine, args[i]);
                         }
-                        var obj = Activator.CreateInstance(type);
-                        return method.Invoke(obj, ps);
+                        return method.Invoke(registr, ps);
                     });
                 }
             }
+            // 添加到对象集合中
+            _registrs.Add(registr);
             return this;
         }
 
@@ -169,7 +183,7 @@ namespace Suyaa.Script
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public ScriptFunctionsBase Reg<T>(string? name) where T : IScriptFunctionRegistr
+        public ScriptFunctionsBase Reg<T>(string? name) where T : IScriptRegistr
         {
             return Reg(name, typeof(T));
         }
@@ -179,7 +193,7 @@ namespace Suyaa.Script
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public ScriptFunctionsBase Reg<T>() where T : IScriptFunctionRegistr
+        public ScriptFunctionsBase Reg<T>() where T : IScriptRegistr
         {
             return Reg(null, typeof(T));
         }

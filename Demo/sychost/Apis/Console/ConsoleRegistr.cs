@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace sychost.Apis.Console
     /// <summary>
     /// 控制台函数注册
     /// </summary>
-    public class ConsoleRegistr : ScriptFunctionRegistrBase
+    public class ConsoleRegistr : ScriptRegistrBase
     {
         /// <summary>
         /// 输出
@@ -27,5 +28,11 @@ namespace sychost.Apis.Console
         [Func]
         public void Println(string content)
             => SConsole.WriteLine(content);
+
+        [Func]
+        public void PrintEngine()
+        {
+            SConsole.WriteLine("" + this.Engine.ObjectContainer.Count);
+        }
     }
 }

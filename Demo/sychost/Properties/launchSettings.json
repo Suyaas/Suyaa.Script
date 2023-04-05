@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SuyaaScriptShell": {
+      "commandName": "Project",
+      "commandLineArgs": ".\\test.syc"
+    }
+  }
+}

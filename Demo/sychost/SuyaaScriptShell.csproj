@@ -20,4 +20,10 @@
     <ProjectReference Include="..\..\Suyaa.Script\Suyaa.Script.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="test.syc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

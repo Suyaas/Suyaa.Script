@@ -13,11 +13,11 @@ namespace Suyaa.Script
         /// <summary>
         /// 操作类型
         /// </summary>
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
         /// <summary>
         /// 操作值
         /// </summary>
-        public object Value { get; set; }
+        public object? Value { get; set; }
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ namespace Suyaa.Script
         public static List<string> ScriptCalculateNames = new List<string>() { "!" };
 
         // 创建算式
-        private static ScriptFunction CreateFormulaFunction(string name, object arg1, object arg2)
+        private static ScriptFunction CreateFormulaFunction(string name, object? arg1, object? arg2)
         {
             ScriptFunction func = new ScriptFunction() { Name = name };
             func.Parameters.Add(arg1);
@@ -164,7 +164,9 @@ namespace Suyaa.Script
                 }
             }
             if (infos.Count != 1) throw new Exception($"算式解析失败。");
-            return infos[0].Value;
+            var value = infos[0].Value;
+            if (value is null) throw new Exception($"算式解析失败。");
+            return value;
         }
 
         /// <summary>
