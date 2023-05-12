@@ -1,3 +1,6 @@
-﻿return(
-	calculate(1 + 2)
+﻿@(
+	println(
+		string(calculate(1 + 2))
+	),
+	print_engine()
 )
