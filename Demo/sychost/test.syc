@@ -2,5 +2,5 @@
 	println(
 		string(calculate(1 + 2))
 	),
-	print_engine()
+	println(exec_encoding("ping", "www.baidu.com", "gb2312"))
 )

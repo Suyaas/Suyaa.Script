@@ -29,10 +29,28 @@ namespace sychost.Apis.Console
         public void Println(string content)
             => SConsole.WriteLine(content);
 
+        /// <summary>
+        /// 运行程序
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         [Func]
-        public void PrintEngine()
+        public string Exec(string file, string args)
         {
-            SConsole.WriteLine("" + this.Engine.ObjectContainer.Count);
+            return sy.Terminal.Execute(file, args);
+        }
+
+        /// <summary>
+        /// 运行程序
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        [Func]
+        public string ExecEncoding(string file, string args, string encoding)
+        {
+            return sy.Terminal.Execute(file, args, Encoding.GetEncoding(encoding));
         }
     }
 }
