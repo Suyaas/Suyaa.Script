@@ -8,12 +8,18 @@
     <ApplicationIcon>suyaa.ico</ApplicationIcon>
     <Product>Suyaa Script Shell</Product>
     <PackageId></PackageId>
-    <Version>1.0.2304.1</Version>
+    <Version>1.1.2305.3</Version>
     <AssemblyName>syc</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="suyaa.ico" />
+    <Content Include="suyaa.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Suyaa.Windows" Version="1.1.2305.5" />
   </ItemGroup>
 
   <ItemGroup>

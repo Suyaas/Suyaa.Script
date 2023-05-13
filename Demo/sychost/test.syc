@@ -2,5 +2,6 @@
 	println(
 		string(calculate(1 + 2))
 	),
-	println(exec_encoding("ping", "www.baidu.com", "gb2312"))
+	println(exec_encoding("ping", "www.baidu.com", "gb2312")),
+	read_key()
 )

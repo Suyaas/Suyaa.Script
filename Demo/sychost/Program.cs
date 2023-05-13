@@ -5,6 +5,8 @@ using System.Text;
 if (args.Length > 0)
 {
     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    // 设置标题
+    System.Console.Title = args[0];
     // 执行脚本
     ShellHost.Execute(args[0]);
 }

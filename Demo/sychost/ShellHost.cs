@@ -1,4 +1,5 @@
 ﻿using sychost.Apis.Console;
+using sychost.Apis.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,8 @@ namespace sychost
                 if (isElevated)
                 {
                     SConsole.Log("初始化", "权限检测通过");
+                    sy.Windows.RegisterFileAssociations(".syc", "Suyaa.Script", "Suyaa Script Shell File", $"\"{sy.Assembly.ExecutionFilePath}\" \"%1\"", sy.IO.GetExecutionPath("suyaa.ico"));
+                    SConsole.Log("结果", "注册成功");
                 }
                 else
                 {
@@ -75,7 +78,7 @@ namespace sychost
 
         public static void Help()
         {
-            
+
         }
 
         /// <summary>
@@ -89,6 +92,9 @@ namespace sychost
             using (var funcs = new Suyaa.Script.ScriptFunctions())
             {
                 funcs.Reg<ConsoleRegistr>();
+                funcs.Reg<FileRegistr>();
+                funcs.Reg<FolderRegistr>();
+                funcs.Reg<PathRegistr>();
                 using (var engine = new Suyaa.Script.ScriptEngine(script, funcs))
                 {
                     Console.WriteLine(engine.Execute());

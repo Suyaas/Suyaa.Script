@@ -30,6 +30,14 @@ namespace sychost.Apis.Console
             => SConsole.WriteLine(content);
 
         /// <summary>
+        /// 输出
+        /// </summary>
+        /// <param name="content"></param>
+        [Func]
+        public int ReadKey()
+            => System.Console.ReadKey().KeyChar;
+
+        /// <summary>
         /// 运行程序
         /// </summary>
         /// <param name="file"></param>
