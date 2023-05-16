@@ -5,22 +5,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <ApplicationIcon>suyaa.ico</ApplicationIcon>
-    <Product>Suyaa Script Shell</Product>
-    <PackageId></PackageId>
-    <Version>1.1.2305.3</Version>
-    <AssemblyName>syc</AssemblyName>
+    <Version>1.0.2301.1</Version>
+    <ApplicationIcon>script.ico</ApplicationIcon>
+    <Authors>Uncle Zheng</Authors>
+    <Title>声声慢·简脚本语言执行器</Title>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Product>声声慢·简脚本语言执行器</Product>
+    <Description>在终端中执行简语言脚本</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="script.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="script.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="suyaa.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -30,12 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Suyaa.Script\Suyaa.Script.csproj" />
+    <ProjectReference Include="..\Ssm.Jian.Engine\Ssm.Jian.Engine.csproj" />
     <ProjectReference Include="..\Suyaa.Script.Apis\Suyaa.Script.Apis.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="test.syc">
+    <None Update="test.jc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JianConsole": {
+      "commandName": "Project",
+      "commandLineArgs": ".\\test.jc"
+    }
+  }
+}

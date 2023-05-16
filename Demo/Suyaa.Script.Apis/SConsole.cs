@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sychost
+namespace Suyaa.Script.Apis
 {
     public static class SConsole
     {
@@ -19,7 +19,7 @@ namespace sychost
         {
             lock (_lock)
             {
-                Console.Write(content);
+                System.Console.Write(content);
             }
         }
 
@@ -32,10 +32,10 @@ namespace sychost
         {
             lock (_lock)
             {
-                ConsoleColor colorBefore = Console.ForegroundColor;
-                Console.ForegroundColor = color;
-                Console.Write(content);
-                Console.ForegroundColor = colorBefore;
+                ConsoleColor colorBefore = System.Console.ForegroundColor;
+                System.Console.ForegroundColor = color;
+                System.Console.Write(content);
+                System.Console.ForegroundColor = colorBefore;
             }
         }
 
@@ -47,7 +47,7 @@ namespace sychost
         {
             lock (_lock)
             {
-                Console.WriteLine();
+                System.Console.WriteLine();
             }
         }
 
@@ -59,7 +59,7 @@ namespace sychost
         {
             lock (_lock)
             {
-                Console.WriteLine(content);
+                System.Console.WriteLine(content);
             }
         }
 
@@ -72,10 +72,10 @@ namespace sychost
         {
             lock (_lock)
             {
-                ConsoleColor colorBefore = Console.ForegroundColor;
-                Console.ForegroundColor = color;
-                Console.WriteLine(content);
-                Console.ForegroundColor = colorBefore;
+                ConsoleColor colorBefore = System.Console.ForegroundColor;
+                System.Console.ForegroundColor = color;
+                System.Console.WriteLine(content);
+                System.Console.ForegroundColor = colorBefore;
             }
         }
 
@@ -88,12 +88,12 @@ namespace sychost
         {
             lock (_lock)
             {
-                ConsoleColor colorBefore = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write($"[{evt}] ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(content);
-                Console.ForegroundColor = colorBefore;
+                ConsoleColor colorBefore = System.Console.ForegroundColor;
+                System.Console.ForegroundColor = ConsoleColor.DarkGreen;
+                System.Console.Write($"[{evt}] ");
+                System.Console.ForegroundColor = ConsoleColor.Gray;
+                System.Console.WriteLine(content);
+                System.Console.ForegroundColor = colorBefore;
             }
         }
     }

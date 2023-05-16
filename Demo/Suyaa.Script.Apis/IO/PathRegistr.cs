@@ -1,4 +1,5 @@
-﻿using Suyaa;
+﻿using Ssm.Jian.Engine;
+using Suyaa;
 using Suyaa.Script;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sychost.Apis.IO
+namespace Suyaa.Script.Apis.IO
 {
     /// <summary>
     /// 控制台函数注册
@@ -19,6 +20,7 @@ namespace sychost.Apis.IO
         /// </summary>
         /// <param name="content"></param>
         [Func]
+        [JianFunc("合并路径")]
         public string PathCombine(string path1, string path2)
             => sy.IO.CombinePath(path1, path2);
 
@@ -27,6 +29,7 @@ namespace sychost.Apis.IO
         /// </summary>
         /// <param name="content"></param>
         [Func]
+        [JianFunc("获取完整文件名")]
         public string PathGetFullFileName(string path)
             => Path.GetFileName(path);
 
@@ -35,6 +38,7 @@ namespace sychost.Apis.IO
         /// </summary>
         /// <param name="content"></param>
         [Func]
+        [JianFunc("获取文件名")]
         public string PathGetFileName(string path)
             => Path.GetFileNameWithoutExtension(path);
 
@@ -43,6 +47,7 @@ namespace sychost.Apis.IO
         /// </summary>
         /// <param name="content"></param>
         [Func]
+        [JianFunc("获取文件扩展名")]
         public string PathGetExtension(string path)
             => Path.GetExtension(path);
 
@@ -51,6 +56,7 @@ namespace sychost.Apis.IO
         /// </summary>
         /// <param name="content"></param>
         [Func]
+        [JianFunc("获取父文件夹")]
         public string PathGetFolder(string path)
             => Path.GetDirectoryName(path).ToNotNull();
     }

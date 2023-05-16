@@ -1,4 +1,5 @@
 ﻿using Ssm.Jian.Engine;
+using Suyaa.Script;
 using Suyaa.Script.Apis;
 using Suyaa.Script.Apis.Common;
 using Suyaa.Script.Apis.Console;
@@ -11,7 +12,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sychost
+namespace JianConsole
 {
     /// <summary>
     /// 主程序
@@ -40,7 +41,7 @@ namespace sychost
                 if (isElevated)
                 {
                     SConsole.Log("初始化", "权限检测通过");
-                    sy.Windows.RegisterFileAssociations(".syc", "Suyaa.Script", "Suyaa Script Shell File", $"\"{sy.Assembly.ExecutionFilePath}\" \"%1\"", sy.IO.GetExecutionPath("script.ico"));
+                    sy.Windows.RegisterFileAssociations(".jc", "Jian.Script", "ShengShengMan Jian Chinese Language Programming Script", $"\"{sy.Assembly.ExecutionFilePath}\" \"%1\"", $"{sy.IO.GetExecutionPath("script.ico")}");
                     SConsole.Log("结果", "注册成功");
                 }
                 else
@@ -92,19 +93,20 @@ namespace sychost
         {
             Console.Title = $"{sy.Assembly.Name} Ver:{sy.Assembly.Version} - {path}";
             string code = sy.IO.ReadUtf8FileContent(path);
+            ScriptParser.ScriptCalculateNames.Add("计算");
             using (var script = Suyaa.Script.ScriptParser.Parse(code))
-            using (var funcs = new Suyaa.Script.ScriptFunctions())
+            using (Ssm.Jian.Engine.ScriptFunctions funcs = new())
             {
                 // 注册数值函数
-                funcs.Reg<NumericRegistr>();
+                funcs.Reg<NumericRegistr, JianFuncAttribute>();
                 // 注册控制台函数
-                funcs.Reg<ConsoleRegistr>();
+                funcs.Reg<ConsoleRegistr, JianFuncAttribute>();
                 // 注册文件函数
-                funcs.Reg<FileRegistr>();
+                funcs.Reg<FileRegistr, JianFuncAttribute>();
                 // 注册文件夹函数
-                funcs.Reg<FolderRegistr>();
+                funcs.Reg<FolderRegistr, JianFuncAttribute>();
                 // 注册目录函数
-                funcs.Reg<PathRegistr>();
+                funcs.Reg<PathRegistr, JianFuncAttribute>();
                 using (var engine = new Suyaa.Script.ScriptEngine(script, funcs))
                 {
                     Console.WriteLine(engine.Execute());

@@ -141,10 +141,12 @@ namespace Suyaa.Script
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public ScriptFunctionsBase Reg(string? name, System.Type type, IScriptRegistr? registr = null)
+        public ScriptFunctionsBase Reg(string? name, System.Type type, System.Type attributeType, IScriptRegistr? registr = null)
         {
             // 判断接口实现
             if (!type.HasInterface<IScriptRegistr>()) throw new ScriptException($"类型'{type.FullName}'未实现'IScriptFunctionRegistr'接口");
+            // 判断接口实现
+            if (!attributeType.IsBased<FuncAttribute>()) throw new ScriptException($"类型'{type.FullName}'未继承'FuncAttribute'类");
             // 初始化对象
             if (registr is null) registr = (IScriptRegistr)Activator.CreateInstance(type);
             // 设置脚本引擎
@@ -152,7 +154,7 @@ namespace Suyaa.Script
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
             foreach (var method in methods)
             {
-                var funcs = method.GetCustomAttributes<FuncAttribute>();
+                var funcs = (IEnumerable<FuncAttribute>)method.GetCustomAttributes(attributeType);
                 foreach (var func in funcs)
                 {
                     string? funName = null;
@@ -183,6 +185,16 @@ namespace Suyaa.Script
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        public ScriptFunctionsBase Reg(string? name, System.Type type, IScriptRegistr? registr = null)
+        {
+            return Reg(name, type, typeof(FuncAttribute), registr);
+        }
+
+        /// <summary>
+        /// 将类中的所有函数进行注册
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public ScriptFunctionsBase Reg<T>(string? name) where T : IScriptRegistr
         {
             return Reg(name, typeof(T));
@@ -193,7 +205,31 @@ namespace Suyaa.Script
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        public ScriptFunctionsBase Reg<T, TAttribute>(string? name)
+            where T : IScriptRegistr
+            where TAttribute : FuncAttribute
+        {
+            return Reg(name, typeof(T), typeof(TAttribute));
+        }
+
+        /// <summary>
+        /// 将类中的所有函数进行注册
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public ScriptFunctionsBase Reg<T>() where T : IScriptRegistr
+        {
+            return Reg(null, typeof(T));
+        }
+
+        /// <summary>
+        /// 将类中的所有函数进行注册
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public ScriptFunctionsBase Reg<T, TAttribute>() 
+            where T : IScriptRegistr
+            where TAttribute : FuncAttribute
         {
             return Reg(null, typeof(T));
         }
