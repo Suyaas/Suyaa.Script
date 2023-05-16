@@ -246,6 +246,16 @@ namespace Ssm.Jian.Engine
                 }
                 return false;
             });
+            // 返回
+            base.Reg("返回", args =>
+            {
+                if (args.Count < 1) throw new ScriptException($"函数'返回'缺少必要参数");
+                for (int i = 0; i < args.Count - 1; i++)
+                {
+                    FuncInvoke(this.Engine, args[i]);
+                }
+                return GetValue(this.Engine, args[args.Count - 1]);
+            });
         }
     }
 }

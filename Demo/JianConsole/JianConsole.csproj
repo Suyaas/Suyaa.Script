@@ -5,13 +5,15 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.2301.1</Version>
+    <Version>1.1.2305.2</Version>
     <ApplicationIcon>script.ico</ApplicationIcon>
-    <Authors>Uncle Zheng</Authors>
+    <Authors>郑大叔</Authors>
     <Title>声声慢·简脚本语言执行器</Title>
     <PackageId>$(AssemblyName)</PackageId>
     <Product>声声慢·简脚本语言执行器</Product>
-    <Description>在终端中执行简语言脚本</Description>
+    <Description>在终端中执行声声慢·简语言脚本</Description>
+    <PackageIcon>script.png</PackageIcon>
+    <AssemblyName>jian</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="script.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="test.jc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
