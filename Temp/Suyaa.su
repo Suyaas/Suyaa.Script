@@ -1,0 +1,40 @@
+// 引入包
+//$.import("system")
+$.use(console, System.Console)
+
+// 定义对象
+$.struct(ObjectPrint)
+.var(a:string, b:int)
+// 往对象注册实例化函数
+.func(ObjectPrint, self:ObjectPrint)
+    .set(a, "")
+    .set(b, 0)
+    .done()
+// 往对象注册实例化函数
+.func(printAll, self:ObjectPrint)
+    .print($.str(self.a, self.b))
+    .done()
+// 往对象注册静态函数
+.func(printSingle, str:string)
+    .print(str)
+    .done()
+
+
+// 动态往对象注册带返回静态函数
+$.ObjectPrint.func(plus, num1:int, num2:int)
+    .return(!(num1 + num2))
+
+// 主函数
+$.func(main)
+.var(obj1:ObjectPrint, obj2:ObjectPrint)
+.obj1.instance()
+    .set(a, "aaa")
+    .set(b, 2)
+    .done()
+.obj2.instance()
+    .set(a, "bbb")
+    .done()
+.set(obj2.b, $.ObjectPrint.plus(obj1.b, 2))
+.obj1.printAll()
+.obj2.printAll()
+.ObjectPrint.printSingle("OK")

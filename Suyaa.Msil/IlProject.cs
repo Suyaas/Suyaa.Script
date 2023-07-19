@@ -144,7 +144,7 @@ namespace Suyaa.Msil
         }
 
         /// <summary>
-        /// 编译并发布
+        /// Release方式编译
         /// </summary>
         /// <returns></returns>
         public string Release(string? path = null)
@@ -164,7 +164,7 @@ namespace Suyaa.Msil
         }
 
         /// <summary>
-        /// 编译并发布
+        /// Release方式编译
         /// </summary>
         /// <returns></returns>
         public string Release(Platforms platform, string? path = null)
@@ -187,8 +187,11 @@ namespace Suyaa.Msil
         }
 
         /// <summary>
-        /// 以Aot方式编译并发布
+        /// 单文件编译并发布
         /// </summary>
+        /// <param name="platform">编译平台</param>
+        /// <param name="isAot">是否Aot编译</param>
+        /// <param name="path">输出目录</param>
         /// <returns></returns>
         public string Publish(Platforms platform, bool isAot, string? path = null)
         {
