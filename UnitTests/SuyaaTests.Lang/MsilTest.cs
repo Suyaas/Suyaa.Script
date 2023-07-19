@@ -36,7 +36,7 @@ namespace SuyaaTests.Lang
                 // 创建Main函数
                 .Method("Main")
                     .Keyword(IlKeys.Private, IlKeys.Hidebysig, IlKeys.Static)
-                    .Paramter<IlArray<IlString>>("args")
+                    .Param<IlArray<IlString>>("args")
                     .Attach(IlKeys.Cil, IlKeys.Managed)
                     // 添加简单的输出指令
                     .Ldstr(new IlStringValue("This is a first dynamic msil program."))

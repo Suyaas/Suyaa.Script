@@ -75,7 +75,7 @@ namespace Suyaa.Msil
         /// </summary>
         /// <param name="keywords"></param>
         /// <returns></returns>
-        public IlMethod Paramter(params IlField[] paramters)
+        public IlMethod Param(params IlField[] paramters)
         {
             this.Paramters.AddRange(paramters.ToList());
             return this;
@@ -86,7 +86,7 @@ namespace Suyaa.Msil
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public IlMethod Paramter<T>(string name)
+        public IlMethod Param<T>(string name)
             where T : IlType
         {
             this.Paramters.Add(new IlField(name, sy.Assembly.Create<T>()));

@@ -69,6 +69,17 @@ namespace Suyaa.Msil
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        public IlExternAssembly ExternAssembly(IlExternAssembly assembly)
+        {
+            this.Assemblables.Add(assembly);
+            return assembly;
+        }
+
+        /// <summary>
+        /// 添加一个扩展程序集
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public T ExternAssembly<T>()
             where T : IlExternAssembly
         {

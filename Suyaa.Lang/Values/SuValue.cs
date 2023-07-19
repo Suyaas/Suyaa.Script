@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Msil.Values
+namespace Suyaa.Lang.Values
 {
     /// <summary>
-    /// Il值
+    /// Su值
     /// </summary>
-    public abstract class IlValue: Assemblable
+    public abstract class SuValue : Suable
     {
 
     }
 
     /// <summary>
-    /// Il值
+    /// Su值
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class IlValue<T> : IlValue
+    public abstract class SuValue<T> : SuValue
         where T : notnull
     {
         /// <summary>
@@ -28,7 +28,7 @@ namespace Suyaa.Msil.Values
         /// Il值
         /// </summary>
         /// <param name="value"></param>
-        public IlValue(T value)
+        public SuValue(T value)
         {
             Value = value;
         }
