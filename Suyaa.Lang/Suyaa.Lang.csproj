@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Suyaa" Version="1.3.2307.23" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Suyaa.Msil\Suyaa.Msil.csproj" />
+  </ItemGroup>
+
+</Project>
