@@ -11,18 +11,8 @@ namespace Suyaa.Sulang.Types
     /// <summary>
     /// Su方法
     /// </summary>
-    public class SuMethod : NamedSuable, IParamInvokable
+    public class SuMethodInvoker : SuMethodInfo, IParamInvokable
     {
-        /// <summary>
-        /// 所属结构体
-        /// </summary>
-        public SuStruct Struct { get; }
-
-        /// <summary>
-        /// 返回类型
-        /// </summary>
-        public IlType? ReturnType { get; private set; }
-
         /// <summary>
         /// 参数
         /// </summary>
@@ -33,9 +23,9 @@ namespace Suyaa.Sulang.Types
         /// <summary>
         /// 添加参数
         /// </summary>
-        /// <param name="keywords"></param>
+        /// <param name="paramters"></param>
         /// <returns></returns>
-        public SuMethod Param(params ITypable[] paramters)
+        public SuMethodInvoker Param(params ITypable[] paramters)
         {
             Paramters.AddRange(paramters.ToList());
             return this;
@@ -55,11 +45,11 @@ namespace Suyaa.Sulang.Types
         /// <summary>
         /// Su方法
         /// </summary>
+        /// <param name="struc"></param>
         /// <param name="name"></param>
-        public SuMethod(SuStruct struc, string name) : base(name)
+        public SuMethodInvoker(SuStruct struc, string name) : base(struc, name)
         {
-            Struct = struc;
-            Paramters = new List<ITypable>();
+            this.Paramters = new List<ITypable>();
         }
 
         /// <summary>
@@ -68,26 +58,30 @@ namespace Suyaa.Sulang.Types
         /// <param name="method"></param>
         public virtual void Invoke(IlMethod method)
         {
-            // 建立il执行器
-            var invoker = new IlMethodInvoker(this.Struct.GetIlType(), this.Name);
-            // 判断是否为静态调用
-            var field = this.Struct.Object?.GetField(this.Struct.Name);
-            invoker.IsStatic = field?.Keywords.Contains(SuKeys.Class) ?? false;
-            // 添加返回类型
-            if (this.ReturnType != null) invoker.Return(this.ReturnType);
             // 处理参数
             foreach (var p in Paramters)
             {
-                // 添加参数类型
-                invoker.Param(p.GetIlType());
                 // 参数内容处理
                 switch (p)
                 {
                     // 字符串对象
-                    case SuStringValue str:
+                    case SuValue<string> str:
                         method.Ldstr(new IlStringValue(str.Value));
                         break;
                 }
+            }
+            // 建立il执行器
+            var invoker = new IlMethodInvoker(this.Object.GetIlType(), this.Name);
+            // 判断是否为静态调用
+            var field = this.Object.Object?.GetField(this.Object.Name);
+            invoker.IsStatic = field?.Keywords.Contains(SuKeys.Class) ?? false;
+            // 添加返回类型
+            if (this.ReturnType != null) invoker.Return(this.ReturnType);
+            // 处理参数定义
+            foreach (var type in Declares)
+            {
+                // 添加参数类型
+                invoker.Param(type);
             }
             // 执行
             method.Call(invoker);

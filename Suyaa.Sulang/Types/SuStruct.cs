@@ -3,6 +3,7 @@ using Suyaa.Msil;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Suyaa.Sulang.Types
 {
@@ -14,7 +15,7 @@ namespace Suyaa.Sulang.Types
         /// <summary>
         /// 执行器
         /// </summary>
-        public Dictionary<string, IInvokable> Invokers { get; }
+        public List<SuMethodInfo> Methods { get; }
 
         /// <summary>
         /// 所属对象
@@ -24,10 +25,11 @@ namespace Suyaa.Sulang.Types
         /// <summary>
         /// Su结构体
         /// </summary>
+        /// <param name="obj"></param>
         /// <param name="name"></param>
         public SuStruct(IInstantiable? obj, string name) : base(name)
         {
-            this.Invokers = new Dictionary<string, IInvokable>();
+            this.Methods = new List<SuMethodInfo>();
             Object = obj;
         }
 
@@ -36,9 +38,9 @@ namespace Suyaa.Sulang.Types
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public IInvokable GetMethodInvoker(string name)
+        public SuMethodInfo GetMethod(string name)
         {
-            return this.Invokers[name];
+            return this.Methods.Where(d => d.Name == name).First();
         }
 
         /// <summary>
@@ -47,7 +49,7 @@ namespace Suyaa.Sulang.Types
         /// <returns></returns>
         public IlType GetIlType()
         {
-            if (this.Object is null) throw new SuException($"Object not found.");
+            if (this.Object is null) return new IlType(nameof(SuGlobal));
             return this.Object.GetField(this.Name).Type;
         }
     }

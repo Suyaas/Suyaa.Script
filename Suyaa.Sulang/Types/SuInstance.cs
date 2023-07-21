@@ -21,6 +21,7 @@ namespace Suyaa.Sulang.Types
         /// <summary>
         /// Su实例化对象
         /// </summary>
+        /// <param name="obj"></param>
         /// <param name="name"></param>
         public SuInstance(IInstantiable? obj, string name) : base(obj, name)
         {

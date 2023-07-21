@@ -5,34 +5,60 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Suyaa.Msil.Values;
+using Suyaa.Sulang.Values;
+using Suyaa.Msil.Types;
 
 namespace Suyaa.Sulang.Functions
 {
     /// <summary>
     /// 使用语句
     /// </summary>
-    public sealed class SuUse : SuMethod
+    public sealed class SuUse : SuMethodInfo
     {
         /// <summary>
         /// 所属对象
         /// </summary>
         public SuGlobal Global { get; }
 
-        /// <summary>
-        /// 类型
-        /// </summary>
-        public IlType Type { get; }
+        ///// <summary>
+        ///// 类型
+        ///// </summary>
+        //public IlType Type { get; }
 
         /// <summary>
         /// 使用语句
         /// </summary>
         /// <param name="sg"></param>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        public SuUse(SuGlobal sg, string name, IlType type) : base(sg, name)
+        public SuUse(SuGlobal sg) : base(sg, "Use")
         {
             Global = sg;
-            Type = type;
+            //Type = type;
+            this.Declare(new IlType(nameof(IlType)));
+        }
+
+        /// <summary>
+        /// 创建执行器
+        /// </summary>
+        /// <returns></returns>
+        public override SuMethodInvoker CreateInvoker()
+        {
+            return new SuUseInvoker(this);
+        }
+    }
+
+    /// <summary>
+    /// Use方法执行器
+    /// </summary>
+    public class SuUseInvoker : SuMethodInvoker
+    {
+
+        /// <summary>
+        /// Su方法
+        /// </summary>
+        /// <param name="suUse"></param>
+        public SuUseInvoker(SuUse suUse) : base(suUse.Global, suUse.Name)
+        {
         }
 
         /// <summary>
@@ -40,11 +66,15 @@ namespace Suyaa.Sulang.Functions
         /// </summary>
         public override void Invoke(IlMethod method)
         {
-            if (this.Global.ContainsKey(this.Name))
+            var gbl = (SuGlobal)this.Object;
+            if (gbl.ContainsKey(this.Name))
             {
                 throw new SuException($"Field '{this.Name}' is already exists.");
             }
-            this.Global.Fields.Add(new IlField(this.Name, this.Type).Keyword(SuKeys.Class));
+            if (this.Paramters.Count != 2) throw new SuException("Method invoke does not match use(IlVariable, IlType)");
+            if (!(this.Paramters[0] is SuVariable variable)) throw new SuException("Method invoke does not match use(IlVariable, IlType)");
+            if (!(this.Paramters[1] is SuType type)) throw new SuException("Method invoke does not match use(IlVariable, IlType)");
+            gbl.Fields.Add(new IlField(variable.Name, type.GetIlType()).Keyword(SuKeys.Class));
         }
     }
 }

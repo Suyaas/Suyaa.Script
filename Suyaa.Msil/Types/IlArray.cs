@@ -12,14 +12,14 @@ namespace Suyaa.Msil.Types
         /// <summary>
         /// 包含类型
         /// </summary>
-        public IlType Type { get; }
+        public IlType ItemType { get; }
 
         /// <summary>
         /// 数组
         /// </summary>
-        public IlArray(IlType type) : base("array")
+        public IlArray(IlType itemtype) : base("array")
         {
-            Type = type;
+            ItemType = itemtype;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Suyaa.Msil.Types
         /// <returns></returns>
         public override string ToAssembly()
         {
-            return this.Type.ToAssembly() + "[]";
+            return this.ItemType.ToAssembly() + "[]";
         }
     }
 

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Suyaa.Sulang.Functions;
 
 namespace Suyaa.Sulang.Types
 {
@@ -15,6 +16,9 @@ namespace Suyaa.Sulang.Types
         /// <summary>
         /// 全局对象$
         /// </summary>
-        public SuGlobal() : base(null, "$") { }
+        public SuGlobal() : base(null, "$")
+        {
+            this.Methods.Add(new SuUse(this));
+        }
     }
 }

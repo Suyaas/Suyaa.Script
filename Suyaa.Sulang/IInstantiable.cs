@@ -20,7 +20,6 @@ namespace Suyaa.Sulang
         /// 获取字段信息
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="type"></param>
         IlField GetField(string name);
     }
 }

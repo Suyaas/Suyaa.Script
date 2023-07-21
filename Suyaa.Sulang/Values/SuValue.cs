@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Suyaa.Msil;
+using Suyaa.Msil.Types;
+using Suyaa.Sulang.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,7 +19,7 @@ namespace Suyaa.Sulang.Values
     /// Su值
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class SuValue<T> : SuValue
+    public class SuValue<T> : SuValue, ITypable
         where T : notnull
     {
         /// <summary>
@@ -31,6 +34,19 @@ namespace Suyaa.Sulang.Values
         public SuValue(T value)
         {
             Value = value;
+        }
+
+        /// <summary>
+        /// 获取Il类型
+        /// </summary>
+        /// <returns></returns>
+        public IlType GetIlType()
+        {
+            switch (this.Value)
+            {
+                case string _: return sy.Assembly.Create<IlString>();
+                default: throw new SuException($"Unsupported type '{typeof(T).FullName}'");
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Suyaa.Msil;
+using Suyaa.Sulang.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,6 @@ namespace Suyaa.Sulang
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        IInvokable GetMethodInvoker(string name);
+        SuMethodInfo GetMethod(string name);
     }
 }

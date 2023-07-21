@@ -9,6 +9,13 @@ namespace Suyaa.Msil
     /// </summary>
     public class IlType : NamedAssemblable, IAssemblableType
     {
+        private static IlType? _type;
+
+        /// <summary>
+        /// 静态类型
+        /// </summary>
+        public static IlType Type { get => _type ??= new IlType(nameof(IlType)); }
+
         /// <summary>
         /// IL外部类
         /// </summary>
