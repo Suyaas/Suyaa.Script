@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Msil.Consts
+namespace Suyaa.Msil.Values
 {
     /// <summary>
     /// Il字符串值

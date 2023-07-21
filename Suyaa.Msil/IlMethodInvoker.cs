@@ -18,7 +18,7 @@ namespace Suyaa.Msil
         /// <summary>
         /// 返回类型
         /// </summary>
-        public IAssemblableType? ReturnType { get; private set; }
+        public IlType? ReturnType { get; private set; }
 
         /// <summary>
         /// 是否静态方法
@@ -37,7 +37,7 @@ namespace Suyaa.Msil
         /// </summary>
         /// <param name="keywords"></param>
         /// <returns></returns>
-        public IlMethodInvoker Paramter(params IlType[] paramters)
+        public IlMethodInvoker Param(params IlType[] paramters)
         {
             this.Paramters.AddRange(paramters.ToList());
             return this;
@@ -47,10 +47,21 @@ namespace Suyaa.Msil
         /// 添加参数
         /// </summary>
         /// <returns></returns>
-        public IlMethodInvoker Paramter<T>()
+        public IlMethodInvoker Param<T>()
             where T : IlType
         {
             this.Paramters.Add(sy.Assembly.Create<T>());
+            return this;
+        }
+
+        /// <summary>
+        /// 设置返回类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IlMethodInvoker Return(IlType type)
+        {
+            this.ReturnType = type;
             return this;
         }
 

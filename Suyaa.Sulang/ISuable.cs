@@ -1,14 +1,13 @@
-﻿using Suyaa.Msil;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Lang
+namespace Suyaa.Sulang
 {
     /// <summary>
     /// Su可处理对象
     /// </summary>
-    public abstract class Suable : Disposable, ISuable
+    public interface ISuable : IDisposable
     {
     }
 }

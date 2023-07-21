@@ -1,8 +1,8 @@
 using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Suyaa.Msil;
-using Suyaa.Msil.Consts;
 using Suyaa.Msil.ExternAssemblies;
 using Suyaa.Msil.Types;
+using Suyaa.Msil.Values;
 using Xunit.Abstractions;
 
 namespace SuyaaTests.Lang
@@ -40,7 +40,7 @@ namespace SuyaaTests.Lang
                     .Attach(IlKeys.Cil, IlKeys.Managed)
                     // 添加简单的输出指令
                     .Ldstr(new IlStringValue("This is a first dynamic msil program."))
-                    .Call(new IlMethodInvoker(msCorlib.GetIlExternType("System.Console").GetIlType(), "WriteLine") { IsStatic = true }.Paramter<IlString>())
+                    .Call(new IlMethodInvoker(msCorlib.GetIlExternClass("System.Console").GetIlType(), "WriteLine") { IsStatic = true }.Param<IlString>())
                     .Ret();
             // 输出il项目文件
             proj.Output();

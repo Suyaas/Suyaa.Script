@@ -1,5 +1,5 @@
-﻿using Suyaa.Lang.Exceptions;
-using Suyaa.Lang.Types;
+﻿using Suyaa.Sulang.Exceptions;
+using Suyaa.Sulang.Types;
 using Suyaa.Msil;
 using Suyaa.Msil.ExternAssemblies;
 using Suyaa.Msil.Types;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Lang
+namespace Suyaa.Sulang
 {
     /// <summary>
     /// Su程序集
@@ -79,9 +79,12 @@ namespace Suyaa.Lang
         /// <summary>
         /// 执行
         /// </summary>
-        public void Invoke()
+        public void Invoke(IlMethod method)
         {
-            foreach (var invoker in Invokers) invoker.Invoke();
+            // 依次执行解析方法
+            foreach (var invoker in Invokers) invoker.Invoke(method);
+            // 添加结束指令
+            this.CurrentMethod.Ret();
         }
     }
 }

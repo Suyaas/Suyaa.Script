@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Lang
+namespace Suyaa.Sulang.Helpers
 {
     /// <summary>
-    /// 可实例化对象
+    /// MsCorlib助手
     /// </summary>
-    public interface IInstantiable : ISuable
+    public static class MsCorlibHelper
     {
     }
 }

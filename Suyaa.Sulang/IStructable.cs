@@ -3,17 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Lang
+namespace Suyaa.Sulang
 {
     /// <summary>
-    /// 可Msil化对象
+    /// 可结构化对象
     /// </summary>
-    public interface IMsilable
+    public interface IStructable : ITypable
     {
         /// <summary>
-        /// 转化为可编译对象
+        /// 获取方法
         /// </summary>
+        /// <param name="name"></param>
         /// <returns></returns>
-        IAssemblable ToAssemblable();
+        IInvokable GetMethodInvoker(string name);
     }
 }

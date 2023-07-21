@@ -7,7 +7,7 @@ namespace Suyaa.Msil
     /// <summary>
     /// IL外部类
     /// </summary>
-    public class IlExternType : NamedAssemblable, IAssemblableType
+    public class IlExternClass : NamedAssemblable, IAssemblableType, ITypable
     {
         /// <summary>
         /// 外部程序集
@@ -19,7 +19,7 @@ namespace Suyaa.Msil
         /// </summary>
         /// <param name="assembly"></param>
         /// <param name="name"></param>
-        public IlExternType(IlExternAssembly assembly, string name) : base(name)
+        public IlExternClass(IlExternAssembly assembly, string name) : base(name)
         {
             this.Assembly = assembly;
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Lang.Values
+namespace Suyaa.Sulang.Values
 {
     /// <summary>
     /// Su值

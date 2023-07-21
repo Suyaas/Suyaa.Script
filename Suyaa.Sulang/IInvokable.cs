@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Suyaa.Msil;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Lang
+namespace Suyaa.Sulang
 {
     /// <summary>
     /// 可执行对象
@@ -12,6 +13,6 @@ namespace Suyaa.Lang
         /// <summary>
         /// 执行
         /// </summary>
-        void Invoke();
+        void Invoke(IlMethod method);
     }
 }

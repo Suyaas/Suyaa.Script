@@ -7,7 +7,7 @@ namespace Suyaa.Msil
     /// <summary>
     /// IL类
     /// </summary>
-    public class IlClass : NamedAssemblable
+    public class IlClass : NamedAssemblable, IKeywordsable
     {
         /// <summary>
         /// 关键字
@@ -45,7 +45,7 @@ namespace Suyaa.Msil
         /// </summary>
         /// <param name="keywords"></param>
         /// <returns></returns>
-        public IlClass Extends(IlExternType cls)
+        public IlClass Extends(IlExternClass cls)
         {
             this.ExtendsClass = cls;
             return this;

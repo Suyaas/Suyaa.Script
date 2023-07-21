@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Lang.Exceptions
+namespace Suyaa.Sulang.Exceptions
 {
     /// <summary>
     /// Su语言异常

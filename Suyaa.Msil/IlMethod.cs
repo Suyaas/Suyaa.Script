@@ -8,7 +8,7 @@ namespace Suyaa.Msil
     /// <summary>
     /// IL方法
     /// </summary>
-    public class IlMethod : NamedAssemblable
+    public class IlMethod : NamedAssemblable, IKeywordsable
     {
         /// <summary>
         /// 关键字
@@ -220,7 +220,7 @@ namespace Suyaa.Msil
             var invoker = new IlMethodInvoker(this.ClassType, this.Name);
             foreach (var field in this.Paramters)
             {
-                invoker.Paramter(field.Type);
+                invoker.Param(field.Type);
             }
             return invoker;
         }

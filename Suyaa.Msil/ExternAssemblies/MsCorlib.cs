@@ -12,14 +12,14 @@ namespace Suyaa.Msil.ExternAssemblies
         /// <summary>
         /// 对象
         /// </summary>
-        public IlExternType Object { get; }
+        public IlExternClass Object { get; }
 
         /// <summary>
         /// mscorlib
         /// </summary>
         public MsCorlib() : base("mscorlib")
         {
-            this.Object = new IlExternType(this, "System.Object");
+            this.Object = new IlExternClass(this, "System.Object");
         }
     }
 }

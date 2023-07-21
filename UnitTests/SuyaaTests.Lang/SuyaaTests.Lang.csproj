@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Suyaa.Lang\Suyaa.Lang.csproj" />
+    <ProjectReference Include="..\..\Suyaa.Sulang\Suyaa.Sulang.csproj" />
   </ItemGroup>
 
 </Project>

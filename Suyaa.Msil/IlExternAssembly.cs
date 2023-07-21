@@ -21,7 +21,7 @@ namespace Suyaa.Msil
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public IlExternType GetIlExternType(string name) => new IlExternType(this, name);
+        public IlExternClass GetIlExternClass(string name) => new IlExternClass(this, name);
 
         /// <summary>
         /// 输出汇编语言

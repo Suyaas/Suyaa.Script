@@ -1,4 +1,4 @@
-﻿using Suyaa.Lang.Types;
+﻿using Suyaa.Sulang.Types;
 using Suyaa.Msil;
 using Suyaa.Msil.ExternAssemblies;
 using Suyaa.Msil.Types;
@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Lang
+namespace Suyaa.Sulang
 {
     /// <summary>
     /// Su项目
@@ -65,15 +65,20 @@ namespace Suyaa.Lang
         public void Output()
         {
             // 执行程序集
-            this.Assembly.Invoke();
+            this.Assembly.Invoke(this.Assembly.Main);
             // 程序输出
             this.IlProject.Output();
         }
 
-        // 构建
-        public void Build()
+        /// <summary>
+        /// 构建
+        /// </summary>
+        /// <param name="platform"></param>
+        /// <param name="path"></param>
+        public string Build(Platforms platform, string? path = null)
         {
-
+            // 程序输出
+            return this.IlProject.Publish(platform, true, path);
         }
 
         #region 释放资源
