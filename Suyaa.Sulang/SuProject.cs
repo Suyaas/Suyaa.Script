@@ -60,14 +60,27 @@ namespace Suyaa.Sulang
         }
 
         /// <summary>
+        /// 解析脚本
+        /// </summary>
+        /// <param name="script"></param>
+        /// <returns></returns>
+        public SuProject Parse(string script)
+        {
+            using var parser = new SuParser(this);
+            parser.Parse(script);
+            return this;
+        }
+
+        /// <summary>
         /// 输出
         /// </summary>
-        public void Output()
+        public SuProject Output()
         {
             // 执行程序集
             this.Assembly.Invoke(this.Assembly.Main);
             // 程序输出
             this.IlProject.Output();
+            return this;
         }
 
         /// <summary>

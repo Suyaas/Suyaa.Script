@@ -40,5 +40,18 @@ namespace SuyaaTests.Lang
             sp.Output();
             _output.WriteLine(sp.Build(Platforms.Win_x64));
         }
+
+        [Fact]
+        public void Script()
+        {
+            // 创建工作目录
+            string path = sy.IO.GetFullPath("./sulang/");
+            sy.IO.CreateFolder(path);
+            string filePath = sy.IO.CombinePath(path, "test.su");
+            string script = sy.IO.ReadUtf8FileContent(filePath);
+            using var sp = new SuProject("test", path);
+            //sp.Parse(script).Output();
+            _output.WriteLine(sp.Parse(script).Output().Build(Platforms.Win_x64));
+        }
     }
 }
