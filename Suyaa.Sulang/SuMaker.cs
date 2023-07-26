@@ -68,7 +68,7 @@ namespace Suyaa.Sulang
         /// <param name="method"></param>
         /// <param name="struc"></param>
         /// <param name="codes"></param>
-        public SuMaker(SuParser parser, SuMaker asserter, AddMethodCall method, SuStruct struc, List<SuParserCode> codes)
+        public SuMaker(SuParser parser, SuMaker asserter, AddMethodCall method, SuStruct? struc, List<SuParserCode> codes)
         {
             Parser = parser;
             Asserter = asserter;
@@ -118,7 +118,7 @@ namespace Suyaa.Sulang
                 this.Parser,
                 this,
                 method,
-                _structs[_level],
+               _level >= 0 ? _structs[_level] : null,
                 this.Parser.Codes.Where(d => d.MethodId == method.MethodId && d.Level != method.Level).ToList()
                 );
             maker.Make();
@@ -177,14 +177,31 @@ namespace Suyaa.Sulang
             // 有关联函数，则先添加关联函数
             if (this.Method != null)
             {
-                if (this.Struct is null) throw new SuCodeException(this.Method, $"Missing object.");
-                if (this.Struct is SuGlobal sg)
+                if (this.Struct is null)
                 {
-                    _methodInfo = sg.GetMethod(this.Method.Code);
+                    if (!this.Method.Code.StartsWith("@")) throw new SuCodeException(this.Method, $"Missing object.");
+                    // 兼容外部对象
+                    string[] names = this.Method.Code.Substring(1).Split('.');
+                    // 拼接类
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < names.Length - 1; i++)
+                    {
+                        if (sb.Length > 0) sb.Append('.');
+                        sb.Append(names[i]);
+                    }
+                    var cls = this.Parser.Project.MsCorlib.GetIlExternClass(sb.ToString());
+                    _methodInfo = Suable.Method(Suable.Struct(null, cls.GetIlType().Name), names.Last()).Keyword(IlKeys.Static);
                 }
                 else
                 {
-                    _methodInfo = Suable.Method(this.Struct, this.Method.Code);
+                    if (this.Struct is SuGlobal sg)
+                    {
+                        _methodInfo = sg.GetMethod(this.Method.Code);
+                    }
+                    else
+                    {
+                        _methodInfo = Suable.Method(this.Struct, this.Method.Code);
+                    }
                 }
             }
             // 依次生效代码

@@ -11,7 +11,7 @@ namespace Suyaa.Sulang.Types
     /// <summary>
     /// Su方法
     /// </summary>
-    public class SuMethodInvoker : SuMethodInfo, IParamInvokable
+    public class SuMethodInvoker : SuMethodInfo, IParamInvokable, IKeywordsable
     {
         /// <summary>
         /// 参数
@@ -73,8 +73,15 @@ namespace Suyaa.Sulang.Types
             // 建立il执行器
             var invoker = new IlMethodInvoker(this.Object.GetIlType(), this.Name);
             // 判断是否为静态调用
-            var field = this.Object.Object?.GetField(this.Object.Name);
-            invoker.IsStatic = field?.Keywords.Contains(SuKeys.Class) ?? false;
+            if (this.Keywords.Contains(IlKeys.Static))
+            {
+                invoker.IsStatic = true;
+            }
+            else
+            {
+                var field = this.Object.Object?.GetField(this.Object.Name);
+                invoker.IsStatic = field?.Keywords.Contains(SuKeys.Class) ?? false;
+            }
             // 添加返回类型
             if (this.ReturnType != null) invoker.Return(this.ReturnType);
             // 处理参数定义

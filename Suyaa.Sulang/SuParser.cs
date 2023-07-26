@@ -249,8 +249,8 @@ namespace Suyaa.Sulang
             }
             // 如果处于非函数名称状态，则抛出异常
             if (_status != SuParserStatus.MethodName) throw new SuException($"Unexpected character '{chr}'.");
-            // 函数必须是.开头
-            if (_code[0] != '.') throw new SuException($"Unexpected character '{chr}'.");
+            // 函数必须是.开头或者$@
+            if (_code[0] != '.' && !(_code[0] == '$' && _code[1] == '@')) throw new SuException($"Unexpected character '{chr}'.");
             // 添加代码调用
             var methodCall = new AddMethodCall(_line, _pos, _level, _code.ToString(1, _code.Length - 1));
             this.Codes.Add(methodCall);
@@ -382,10 +382,29 @@ namespace Suyaa.Sulang
             if (_status == SuParserStatus.MethodName)
             {
                 if (_code.Length <= 0) throw new SuException($"Unexpected character '{chr}'.");
+                // 兼容$对象
                 if (_code.Length == 1 && _code[0] == '$')
                 {
                     // 添加全局对象
                     this.Codes.Add(new SetObject(_line, _pos, _level, _code.ToString()));
+                    _code.Clear();
+                    _code.Append(chr);
+                    return;
+                }
+                // 兼容全局对象
+                if (_code.Length > 1 && _code[0] == '$')
+                {
+                    // 兼容全局外部对象引用，不处理，直接添加
+                    if (_code[1] == '@')
+                    {
+                        if (_code.Length == 2) throw new SuException($"Unexpected character '{chr}'.");
+                        _code.Append(chr);
+                        return;
+                    }
+                    // 添加$对象
+                    this.Codes.Add(new SetObject(_line, _pos, _level, "$"));
+                    // 添加子对象
+                    this.Codes.Add(new SetChildObject(_line, _pos, _level, _code.ToString(1, _code.Length - 1)));
                     _code.Clear();
                     _code.Append(chr);
                     return;
@@ -400,6 +419,7 @@ namespace Suyaa.Sulang
             }
             // 添加
             _code.Append(chr);
+            _status = SuParserStatus.MethodName;
         }
 
         // 逗号 ,

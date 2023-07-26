@@ -19,7 +19,7 @@ namespace Suyaa.Sulang.Exceptions
         /// </summary>
         /// <param name="code"></param>
         /// <param name="message"></param>
-        public SuCodeException(SuParserCode code, string message) : base($"Line {code.Line} {code.Type} error: {message}")
+        public SuCodeException(SuParserCode code, string message) : base($"Line {code.Line} Pos {code.Pos} {code.Type} error: {message}")
         {
             Code = code;
         }

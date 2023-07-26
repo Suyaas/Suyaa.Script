@@ -49,7 +49,7 @@ namespace Suyaa.Sulang.Types
         /// <returns></returns>
         public IlType GetIlType()
         {
-            if (this.Object is null) return new IlType(nameof(SuGlobal));
+            if (this.Object is null) return new IlType(this.Name);
             return this.Object.GetField(this.Name).Type;
         }
     }

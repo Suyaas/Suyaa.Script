@@ -18,7 +18,10 @@ namespace Suyaa.Sulang.Types
         /// </summary>
         public SuGlobal() : base(null, "$")
         {
+            // Use语句
             this.Methods.Add(new SuUse(this));
+            // Step语句
+            this.Methods.Add(new SuStep(this));
         }
     }
 }

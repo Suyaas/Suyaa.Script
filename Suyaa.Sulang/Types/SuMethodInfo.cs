@@ -11,7 +11,7 @@ namespace Suyaa.Sulang.Types
     /// <summary>
     /// Su方法
     /// </summary>
-    public class SuMethodInfo : NamedSuable
+    public class SuMethodInfo : NamedSuable, IKeywordsable
     {
         /// <summary>
         /// 所属结构体
@@ -28,7 +28,26 @@ namespace Suyaa.Sulang.Types
         /// </summary>
         public List<IlType> Declares { get; }
 
+        /// <summary>
+        /// 关键字
+        /// </summary>
+        public List<string> Keywords { get; }
+
         #region 快捷函数
+
+        /// <summary>
+        /// 设置关键字
+        /// </summary>
+        /// <param name="keywords"></param>
+        /// <returns></returns>
+        public SuMethodInfo Keyword(params string[] keywords)
+        {
+            foreach (var key in keywords)
+            {
+                if (!this.Keywords.Contains(key)) this.Keywords.Add(key);
+            }
+            return this;
+        }
 
         /// <summary>
         /// 添加参数
@@ -63,6 +82,7 @@ namespace Suyaa.Sulang.Types
         {
             this.Object = struc;
             this.Declares = new List<IlType>();
+            this.Keywords = new List<string>();
         }
 
         /// <summary>
@@ -73,6 +93,7 @@ namespace Suyaa.Sulang.Types
         {
             var invoker = new SuMethodInvoker(this.Object, this.Name);
             invoker.Declares.AddRange(this.Declares);
+            invoker.Keywords.AddRange(this.Keywords);
             return invoker;
         }
 
