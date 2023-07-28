@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Suyaa.Msil.Values;
-using Suyaa.Sulang.Values;
 using Suyaa.Msil.Types;
 
 namespace Suyaa.Sulang.Functions
@@ -14,7 +13,7 @@ namespace Suyaa.Sulang.Functions
     /// <summary>
     /// 使用语句
     /// </summary>
-    public sealed class SuUse : SuMethodInfo
+    public sealed class Use : SuMethodInfo
     {
         /// <summary>
         /// 所属对象
@@ -30,7 +29,7 @@ namespace Suyaa.Sulang.Functions
         /// 使用语句
         /// </summary>
         /// <param name="sg"></param>
-        public SuUse(SuGlobal sg) : base(sg, "Use")
+        public Use(SuGlobal sg) : base(sg, "Use")
         {
             Global = sg;
             //Type = type;
@@ -41,9 +40,9 @@ namespace Suyaa.Sulang.Functions
         /// 创建执行器
         /// </summary>
         /// <returns></returns>
-        public override SuMethodInvoker CreateInvoker()
+        public override SuMethodInvoker CreateInvoker(IlMethod method)
         {
-            return new SuUseInvoker(this);
+            return new SuUseInvoker(method, this);
         }
     }
 
@@ -56,15 +55,25 @@ namespace Suyaa.Sulang.Functions
         /// <summary>
         /// Su方法
         /// </summary>
+        /// <param name="method"></param>
         /// <param name="suUse"></param>
-        public SuUseInvoker(SuUse suUse) : base(suUse.Global, suUse.Name)
+        public SuUseInvoker(IlMethod method, Use suUse) : base(method, suUse.Global, suUse.Name)
         {
+        }
+
+        /// <summary>
+        /// 获取执行返回类型
+        /// </summary>
+        /// <returns></returns>
+        public override ITypable GetInvokeReutrnType()
+        {
+            return this.Object;
         }
 
         /// <summary>
         /// 执行
         /// </summary>
-        public override void Invoke(IlMethod method)
+        public override void Invoke()
         {
             var gbl = (SuGlobal)this.Object;
             if (gbl.ContainsKey(this.Name))

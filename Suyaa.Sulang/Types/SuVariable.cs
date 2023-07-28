@@ -9,23 +9,29 @@ namespace Suyaa.Sulang.Types
     /// <summary>
     /// Su类型
     /// </summary>
-    public sealed class SuVariable : NamedSuable, ITypable
+    public sealed class SuVariable : SuType, ICodable
     {
+        /// <summary>
+        /// 变量名
+        /// </summary>
+        public string VarName { get; }
+
         /// <summary>
         /// Su类型
         /// </summary>
-        /// <param name="name"></param>
-        public SuVariable(string name) : base(name)
+        /// <param name="varName"></param>
+        public SuVariable(string varName) : base(IlConsts.Variable)
         {
+            VarName = varName;
         }
 
         /// <summary>
-        /// 获取Il类型
+        /// 获取代码
         /// </summary>
         /// <returns></returns>
-        public IlType GetIlType()
+        public string ToCodeString()
         {
-            return IlVariable.Type;
+            return this.VarName;
         }
     }
 }

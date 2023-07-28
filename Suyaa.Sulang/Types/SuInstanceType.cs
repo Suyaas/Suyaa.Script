@@ -11,7 +11,7 @@ namespace Suyaa.Sulang.Types
     /// <summary>
     /// Su实例化对象
     /// </summary>
-    public class SuInstance : SuStruct, IInstantiable
+    public class SuInstanceType : SuStructType, IInstantiable
     {
         /// <summary>
         /// 字段
@@ -22,8 +22,7 @@ namespace Suyaa.Sulang.Types
         /// Su实例化对象
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="name"></param>
-        public SuInstance(IInstantiable? obj, string name) : base(obj, name)
+        public SuInstanceType(ITypable obj) : base(obj)
         {
             this.Fields = new List<IlField>();
         }
@@ -48,16 +47,17 @@ namespace Suyaa.Sulang.Types
             if (ContainsKey(field.Name)) throw new SuException($"Field '{field.Name}' already exists.");
             this.Fields.Add(field);
         }
-        
+
         /// <summary>
         /// 获取字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         /// <exception cref="SuException"></exception>
-        public IlField GetField(string name)
+        public virtual IlField? GetField(string name)
         {
-            return this.Fields.Where(d => d.Name == name).FirstOrDefault() ?? throw new SuException($"Field '{name}' not exists.");
+            return this.Fields.Where(d => d.Name == name).FirstOrDefault();
+            //?? throw new SuException($"Field '{name}' not exists.");
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Suyaa.Sulang.Types
         /// <returns></returns>
         public IlField this[string name]
         {
-            get => this.Fields.Where(d => d.Name == name).FirstOrDefault() ?? throw new SuException($"Field '{name}' not exists.");
+            get => GetField(name) ?? throw new SuException($"Field '{name}' not exists.");
         }
     }
 }

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Suyaa.Msil.Values;
-using Suyaa.Sulang.Values;
 using Suyaa.Msil.Types;
 
 namespace Suyaa.Sulang.Functions
@@ -14,7 +13,7 @@ namespace Suyaa.Sulang.Functions
     /// <summary>
     /// 使用语句
     /// </summary>
-    public sealed class SuStep : SuMethodInfo
+    public sealed class Step : SuMethodInfo
     {
         /// <summary>
         /// 所属对象
@@ -30,7 +29,7 @@ namespace Suyaa.Sulang.Functions
         /// 使用语句
         /// </summary>
         /// <param name="sg"></param>
-        public SuStep(SuGlobal sg) : base(sg, "Step")
+        public Step(SuGlobal sg) : base(sg, "Step")
         {
             Global = sg;
             //Type = type;
@@ -41,9 +40,9 @@ namespace Suyaa.Sulang.Functions
         /// 创建执行器
         /// </summary>
         /// <returns></returns>
-        public override SuMethodInvoker CreateInvoker()
+        public override SuMethodInvoker CreateInvoker(IlMethod method)
         {
-            return new SuStepInvoker(this);
+            return new SuStepInvoker(method, this);
         }
     }
 
@@ -56,15 +55,25 @@ namespace Suyaa.Sulang.Functions
         /// <summary>
         /// Su方法
         /// </summary>
+        /// <param name="method"></param>
         /// <param name="step"></param>
-        public SuStepInvoker(SuStep step) : base(step.Global, step.Name)
+        public SuStepInvoker(IlMethod method, Step step) : base(method, step.Global, step.Name)
         {
+        }
+
+        /// <summary>
+        /// 获取执行返回类型
+        /// </summary>
+        /// <returns></returns>
+        public override ITypable GetInvokeReutrnType()
+        {
+            return this.Object;
         }
 
         /// <summary>
         /// 执行
         /// </summary>
-        public override void Invoke(IlMethod method)
+        public override void Invoke()
         {
             //var gbl = (SuGlobal)this.Object;
             //if (gbl.ContainsKey(this.Name))

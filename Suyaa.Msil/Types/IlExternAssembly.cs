@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Msil
+namespace Suyaa.Msil.Types
 {
     /// <summary>
     /// 程序集
     /// </summary>
-    public class IlExternAssembly : NamedAssemblable
+    public class IlExternAssembly : IlType
     {
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace Suyaa.Sulang
         /// </summary>
         public SuProject(string name, string folder)
         {
-            this.Global = new SuGlobal();
+            this.Global = SuConsts.Global;
             this.MsCorlib = new MsCorlib();
             var proj = this.IlProject = new IlProject(name, folder);
             this.Assembly = new SuAssembly(this);
@@ -77,7 +77,7 @@ namespace Suyaa.Sulang
         public SuProject Output()
         {
             // 执行程序集
-            this.Assembly.Invoke(this.Assembly.Main);
+            this.Assembly.Invoke();
             // 程序输出
             this.IlProject.Output();
             return this;

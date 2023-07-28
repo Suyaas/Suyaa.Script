@@ -39,8 +39,8 @@ namespace SuyaaTests.Lang
                     .Param<IlArray<IlString>>("args")
                     .Attach(IlKeys.Cil, IlKeys.Managed)
                     // 添加简单的输出指令
-                    .Ldstr(new IlStringValue("This is a first dynamic msil program."))
-                    .Call(new IlMethodInvoker(msCorlib.GetIlExternClass("System.Console").GetIlType(), "WriteLine") { IsStatic = true }.Param<IlString>())
+                    .Ldstr(new IlValue<string>("This is a first dynamic msil program."))
+                    .Call(new IlMethodInvoker(msCorlib.GetIlExternClass("System.Console"), "WriteLine") { IsStatic = true }.Param<IlString>())
                     .Ret();
             // 输出il项目文件
             proj.Output();

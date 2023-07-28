@@ -79,12 +79,41 @@ namespace Suyaa.Sulang
         /// <summary>
         /// 执行
         /// </summary>
-        public void Invoke(IlMethod method)
+        public void Invoke()
         {
+#if DEBUG
+            // 输出临时的sup文件
+            string tempPath = sy.IO.GetFullPath("./parser");
+            sy.IO.CreateFolder(tempPath);
+            sy.IO.WriteUtf8FileContent(sy.IO.CombinePath(tempPath, "temp.sui"), ToCodeString());
+#endif
             // 依次执行解析方法
-            foreach (var invoker in Invokers) invoker.Invoke(method);
+            foreach (var invoker in Invokers) invoker.Invoke();
             // 添加结束指令
             this.CurrentMethod.Ret();
+        }
+
+        /// <summary>
+        /// 获取执行返回结果类型
+        /// </summary>
+        /// <returns></returns>
+        public ITypable GetInvokeReutrnType()
+        {
+            return SuConsts.Void;
+        }
+
+        /// <summary>
+        /// 获取代码字符串
+        /// </summary>
+        /// <returns></returns>
+        public string ToCodeString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var invoker in this.Invokers)
+            {
+                sb.Append(invoker.ToCodeString());
+            }
+            return sb.ToString();
         }
     }
 }

@@ -10,7 +10,12 @@ namespace Suyaa.Sulang.Codes
     public class AddMethodCall : SuParserCode
     {
         // 种子
-        private static long _methodIder = 0;
+        private static long _ider = 0;
+
+        /// <summary>
+        /// 唯一标识
+        /// </summary>
+        public long Id { get; }
 
         /// <summary>
         /// 设置对象
@@ -21,7 +26,23 @@ namespace Suyaa.Sulang.Codes
         /// <param name="code"></param>
         public AddMethodCall(int line, int pos, int level, string code) : base(line, pos, level, SuParserCodeType.AddMethodCall, code)
         {
-            this.MethodId = ++_methodIder;
+            this.Id = ++_ider;
+        }
+
+        /// <summary>
+        /// 转化为字符串
+        /// </summary>
+        /// <returns></returns>
+        public override string ToCodeString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(new string(' ', this.Level * 4));
+            sb.Append($"[0x{this.MethodId.ToString("x").PadLeft(8, '0')}] {this.Type} {this.Code} :");
+            sb.Append($" Line {this.Line}");
+            sb.Append($" Pos {this.Pos}");
+            sb.Append($" Level {this.Level}");
+            sb.Append($" Id {this.Id}");
+            return sb.ToString();
         }
     }
 }

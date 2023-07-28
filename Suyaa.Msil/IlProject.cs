@@ -1,4 +1,5 @@
 ﻿using Suyaa.Msil.Helpers;
+using Suyaa.Msil.Types;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

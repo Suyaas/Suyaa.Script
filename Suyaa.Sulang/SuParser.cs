@@ -251,8 +251,28 @@ namespace Suyaa.Sulang
             if (_status != SuParserStatus.MethodName) throw new SuException($"Unexpected character '{chr}'.");
             // 函数必须是.开头或者$@
             if (_code[0] != '.' && !(_code[0] == '$' && _code[1] == '@')) throw new SuException($"Unexpected character '{chr}'.");
+            string funName;
+            // 将外部调用和常规调用分开处理
+            if (_code[0] == '$' && _code[1] == '@')
+            {
+                string[] codes = _code.ToString(1, _code.Length - 1).Split('.');
+                if (codes.Length <= 1) throw new SuException($"Unexpected character '{chr}'.");
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < codes.Length - 1; i++)
+                {
+                    if (sb.Length > 0) sb.Append('.');
+                    sb.Append(codes[i]);
+                }
+                // 添加$对象
+                this.Codes.Add(new SetObject(_line, _pos, _level, sb.ToString()) { MethodId = _methodId });
+                funName = codes.Last();
+            }
+            else
+            {
+                funName = _code.ToString(1, _code.Length - 1);
+            }
             // 添加代码调用
-            var methodCall = new AddMethodCall(_line, _pos, _level, _code.ToString(1, _code.Length - 1));
+            var methodCall = new AddMethodCall(_line, _pos, _level, funName) { MethodId = _methodId };
             this.Codes.Add(methodCall);
             // 常规添加字符，同时代码层级+1
             //_code.Append(chr);
@@ -260,13 +280,13 @@ namespace Suyaa.Sulang
             // 设置调用链
             if (_methods.Count <= _level)
             {
-                _methods.Add(methodCall.MethodId);
+                _methods.Add(methodCall.Id);
             }
             else
             {
-                _methods[_level] = methodCall.MethodId;
+                _methods[_level] = methodCall.Id;
             }
-            _methodId = methodCall.MethodId;
+            _methodId = methodCall.Id;
             // 设置状态为参数
             _status = SuParserStatus.MethodParam;
             // 清理代码缓存
@@ -297,7 +317,7 @@ namespace Suyaa.Sulang
                 // 层级有变化，则先添加一个参数添加操作
                 if (lastCode.Level != _level)
                 {
-                    this.Codes.Add(new AddParamter(_line, _pos, _level, _methodId));
+                    this.Codes.Add(new AddParamter(_line, _pos, _level, _methodId) { MethodId = _methodId });
                 }
                 this.Codes.Add(new SetParamterValue(_line, _pos, _level, _code.ToString()) { MethodId = _methodId });
                 // 清理代码缓存
@@ -386,7 +406,7 @@ namespace Suyaa.Sulang
                 if (_code.Length == 1 && _code[0] == '$')
                 {
                     // 添加全局对象
-                    this.Codes.Add(new SetObject(_line, _pos, _level, _code.ToString()));
+                    this.Codes.Add(new SetObject(_line, _pos, _level, _code.ToString()) { MethodId = _methodId });
                     _code.Clear();
                     _code.Append(chr);
                     return;
@@ -402,9 +422,9 @@ namespace Suyaa.Sulang
                         return;
                     }
                     // 添加$对象
-                    this.Codes.Add(new SetObject(_line, _pos, _level, "$"));
+                    this.Codes.Add(new SetObject(_line, _pos, _level, "$") { MethodId = _methodId });
                     // 添加子对象
-                    this.Codes.Add(new SetChildObject(_line, _pos, _level, _code.ToString(1, _code.Length - 1)));
+                    this.Codes.Add(new SetChildObject(_line, _pos, _level, _code.ToString(1, _code.Length - 1)) { MethodId = _methodId });
                     _code.Clear();
                     _code.Append(chr);
                     return;
@@ -412,7 +432,7 @@ namespace Suyaa.Sulang
                 // 子对象必须是.开头
                 if (_code[0] != '.') throw new SuException($"Unexpected character '{chr}'.");
                 // 添加子对象
-                this.Codes.Add(new SetChildObject(_line, _pos, _level, _code.ToString(1, _code.Length - 1)));
+                this.Codes.Add(new SetChildObject(_line, _pos, _level, _code.ToString(1, _code.Length - 1)) { MethodId = _methodId });
                 _code.Clear();
                 _code.Append(chr);
                 return;
@@ -447,7 +467,7 @@ namespace Suyaa.Sulang
                 // 层级有变化，则先添加一个参数添加操作
                 if (lastCode.Level != _level)
                 {
-                    this.Codes.Add(new AddParamter(_line, _pos, _level, _methodId));
+                    this.Codes.Add(new AddParamter(_line, _pos, _level, _methodId) { MethodId = _methodId });
                 }
                 // 添加值处理
                 this.Codes.Add(new SetParamterValue(_line, _pos, _level, _code.ToString()) { MethodId = _methodId });

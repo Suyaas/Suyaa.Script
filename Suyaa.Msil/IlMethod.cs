@@ -40,6 +40,11 @@ namespace Suyaa.Msil
         /// </summary>
         public List<IlInstruction> Instructions { get; }
 
+        /// <summary>
+        /// 字段集合
+        /// </summary>
+        public List<IlField> Fields { get; }
+
         #region 快捷函数
 
         /// <summary>
@@ -93,6 +98,18 @@ namespace Suyaa.Msil
             return this;
         }
 
+
+        /// <summary>
+        /// 添加参数
+        /// </summary>
+        /// <param name="keywords"></param>
+        /// <returns></returns>
+        public IlMethod Field(string name, IlType type)
+        {
+            this.Fields.Add(new IlField(name, type));
+            return this;
+        }
+
         #endregion
 
         #region 指令操作
@@ -105,6 +122,45 @@ namespace Suyaa.Msil
         public IlMethod Ldstr(IAssemblable content)
         {
             IlInstruction instruction = new IlInstruction("ldstr");
+            instruction.Paramters.Add(content);
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
+        /// ldloca.s
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Ldloca_s(IAssemblable content)
+        {
+            IlInstruction instruction = new IlInstruction("ldloca.s");
+            instruction.Paramters.Add(content);
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
+        /// ldloc.s
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Ldloc_s(IAssemblable content)
+        {
+            IlInstruction instruction = new IlInstruction("ldloc.s");
+            instruction.Paramters.Add(content);
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
+        /// stloc.s
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Stloc_s(IAssemblable content)
+        {
+            IlInstruction instruction = new IlInstruction("stloc.s");
             instruction.Paramters.Add(content);
             this.Instructions.Add(instruction);
             return this;
@@ -149,6 +205,7 @@ namespace Suyaa.Msil
             this.ClassType = type;
             this.Paramters = new List<IlField>();
             this.Instructions = new List<IlInstruction>();
+            this.Fields = new List<IlField>();
         }
 
         /// <summary>
@@ -202,6 +259,20 @@ namespace Suyaa.Msil
             }
             sb.AppendLine(" {");
             sb.AppendLine(".entrypoint");
+            // 添加变量初始化
+            if (this.Fields.Any())
+            {
+                sb.AppendLine(".locals init (");
+                StringBuilder sbField = new StringBuilder();
+                foreach (var field in this.Fields)
+                {
+                    if (sbField.Length > 0) sbField.AppendLine(",");
+                    sbField.Append(field.ToAssembly());
+                }
+                sb.AppendLine(sbField.ToString());
+                sb.AppendLine(")");
+                sbField.Clear();
+            }
             // 添加指令集
             foreach (var instruction in this.Instructions)
             {

@@ -1,4 +1,5 @@
 ﻿using Suyaa.Msil;
+using Suyaa.Sulang.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,6 +21,6 @@ namespace Suyaa.Sulang
         /// 获取字段信息
         /// </summary>
         /// <param name="name"></param>
-        IlField GetField(string name);
+        IlField? GetField(string name);
     }
 }

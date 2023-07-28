@@ -8,39 +8,33 @@ using System.Linq;
 namespace Suyaa.Sulang.Types
 {
     /// <summary>
-    /// Su结构体
+    /// Su字段
     /// </summary>
-    public class SuStruct : NamedSuable, IStructable
+    public sealed class SuField : NamedSuable, ITypable
     {
-        /// <summary>
-        /// 执行器
-        /// </summary>
-        public List<SuMethodInfo> Methods { get; }
 
         /// <summary>
         /// 所属对象
         /// </summary>
-        public IInstantiable? Object { get; }
+        public IInstantiable Object { get; }
 
         /// <summary>
         /// Su结构体
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="name"></param>
-        public SuStruct(IInstantiable? obj, string name) : base(name)
+        public SuField(IInstantiable obj, string name) : base(name)
         {
-            this.Methods = new List<SuMethodInfo>();
             Object = obj;
         }
 
         /// <summary>
-        /// 获取执行器
+        /// 获取Il字段信息
         /// </summary>
-        /// <param name="name"></param>
         /// <returns></returns>
-        public SuMethodInfo GetMethod(string name)
+        public IlField? GetIlField()
         {
-            return this.Methods.Where(d => d.Name == name).First();
+            return this.Object.GetField(this.Name);
         }
 
         /// <summary>
@@ -49,8 +43,7 @@ namespace Suyaa.Sulang.Types
         /// <returns></returns>
         public IlType GetIlType()
         {
-            if (this.Object is null) return new IlType(this.Name);
-            return this.Object.GetField(this.Name).Type;
+            return GetIlField()?.Type ?? IlConsts.Null;
         }
     }
 }

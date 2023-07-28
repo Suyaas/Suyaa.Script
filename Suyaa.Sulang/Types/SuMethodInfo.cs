@@ -1,5 +1,4 @@
-﻿using Suyaa.Sulang.Values;
-using Suyaa.Msil;
+﻿using Suyaa.Msil;
 using Suyaa.Msil.Values;
 using System;
 using System.Collections.Generic;
@@ -16,12 +15,12 @@ namespace Suyaa.Sulang.Types
         /// <summary>
         /// 所属结构体
         /// </summary>
-        public SuStruct Object { get; }
+        public ITypable Object { get; }
 
         /// <summary>
         /// 返回类型
         /// </summary>
-        public IlType? ReturnType { get; private set; }
+        public ITypable ReturnType { get; private set; }
 
         /// <summary>
         /// 方法参数申明
@@ -71,29 +70,41 @@ namespace Suyaa.Sulang.Types
             return this;
         }
 
+        /// <summary>
+        /// 设定返回参数
+        /// </summary>
+        /// <returns></returns>
+        public SuMethodInfo Return(ITypable type)
+        {
+            this.ReturnType = type;
+            return this;
+        }
+
         #endregion
 
         /// <summary>
         /// Su方法
         /// </summary>
-        /// <param name="struc"></param>
+        /// <param name="obj"></param>
         /// <param name="name"></param>
-        public SuMethodInfo(SuStruct struc, string name) : base(name)
+        public SuMethodInfo(ITypable obj, string name) : base(name)
         {
-            this.Object = struc;
+            this.Object = obj;
             this.Declares = new List<IlType>();
             this.Keywords = new List<string>();
+            this.ReturnType = new SuVoid();
         }
 
         /// <summary>
         /// 创建一个执行器
         /// </summary>
         /// <returns></returns>
-        public virtual SuMethodInvoker CreateInvoker()
+        public virtual SuMethodInvoker CreateInvoker(IlMethod method)
         {
-            var invoker = new SuMethodInvoker(this.Object, this.Name);
+            var invoker = new SuMethodInvoker(method, this.Object, this.Name);
             invoker.Declares.AddRange(this.Declares);
             invoker.Keywords.AddRange(this.Keywords);
+            invoker.Return(this.ReturnType);
             return invoker;
         }
 

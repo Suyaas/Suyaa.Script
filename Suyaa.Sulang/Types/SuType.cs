@@ -8,7 +8,7 @@ namespace Suyaa.Sulang.Types
     /// <summary>
     /// Su类型
     /// </summary>
-    public sealed class SuType : NamedSuable, ITypable
+    public class SuType : NamedSuable, ITypable
     {
         // il类型
         private readonly IlType _type;
@@ -35,9 +35,9 @@ namespace Suyaa.Sulang.Types
         /// 获取Il类型
         /// </summary>
         /// <returns></returns>
-        public IlType GetIlType()
+        public virtual IlType GetIlType()
         {
-            return new IlType(this.Name);
+            return _type;
         }
     }
 }

@@ -16,6 +16,6 @@ namespace Suyaa.Sulang
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        SuMethodInfo GetMethod(string name);
+        SuMethodInfo? GetMethod(string name);
     }
 }

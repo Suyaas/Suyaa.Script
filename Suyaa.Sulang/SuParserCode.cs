@@ -39,7 +39,7 @@ namespace Suyaa.Sulang
     /// <summary>
     /// 代码描述
     /// </summary>
-    public abstract class SuParserCode : Disposable
+    public abstract class SuParserCode : Disposable, ICodable
     {
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Suyaa.Sulang
         /// 转化为字符串
         /// </summary>
         /// <returns></returns>
-        public string ToCodeString()
+        public virtual string ToCodeString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(new string(' ', this.Level * 4));

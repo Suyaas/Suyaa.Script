@@ -9,19 +9,39 @@ using Suyaa.Sulang.Functions;
 namespace Suyaa.Sulang.Types
 {
     /// <summary>
+    /// 全局对象$类型
+    /// </summary>
+    public sealed class IlGlobal : IlType
+    {
+        /// <summary>
+        /// 全局对象$类型
+        /// </summary>
+        public IlGlobal() : base("$")
+        {
+        }
+    }
+
+    /// <summary>
     /// 全局对象$
     /// </summary>
-    public sealed class SuGlobal : SuInstance, IInstantiable
+    public sealed class SuGlobal : SuInstanceType, IInstantiable
     {
+        // 类型
+        private static SuType _type = new SuType(new IlGlobal());
+
         /// <summary>
         /// 全局对象$
         /// </summary>
-        public SuGlobal() : base(null, "$")
+        public SuGlobal() : base(_type)
         {
-            // Use语句
-            this.Methods.Add(new SuUse(this));
-            // Step语句
-            this.Methods.Add(new SuStep(this));
+            // Use函数
+            this.Methods.Add(new Use(this));
+            // Step函数
+            this.Methods.Add(new Step(this));
+            // Int函数
+            this.Methods.Add(new Functions.Int32(this));
+            // String函数
+            this.Methods.Add(new Functions.String(this));
         }
     }
 }

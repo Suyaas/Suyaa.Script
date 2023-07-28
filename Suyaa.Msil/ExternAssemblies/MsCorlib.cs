@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Suyaa.Msil.Types;
 
 namespace Suyaa.Msil.ExternAssemblies
 {

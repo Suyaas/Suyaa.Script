@@ -1,6 +1,5 @@
 ﻿using Suyaa.Sulang.Exceptions;
 using Suyaa.Sulang.Types;
-using Suyaa.Sulang.Values;
 using Suyaa.Msil;
 using Suyaa.Msil.Types;
 using Suyaa.Msil.Values;
@@ -14,7 +13,7 @@ namespace Suyaa.Sulang.Functions
     /// <summary>
     /// 调用函数
     /// </summary>
-    public sealed class SuCall : Suable, IInvokable
+    public sealed class Call : Suable, IInvokable
     {
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace Suyaa.Sulang.Functions
         /// 调用函数
         /// </summary>
         /// <param name="invoker">执行对象</param>
-        public SuCall(IParamInvokable invoker)
+        public Call(IParamInvokable invoker)
         {
             Invoker = invoker;
             this.Paramters = new List<ITypable>();
@@ -42,7 +41,7 @@ namespace Suyaa.Sulang.Functions
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public SuCall Param(ITypable param)
+        public Call Param(ITypable param)
         {
             this.Paramters.Add(param);
             return this;
@@ -60,10 +59,27 @@ namespace Suyaa.Sulang.Functions
         /// <summary>
         /// 执行
         /// </summary>
-        public void Invoke(IlMethod method)
+        public void Invoke()
         {
             foreach (var param in this.Paramters) this.Invoker.AddParam(param);
-            this.Invoker.Invoke(method);
+        }
+
+        /// <summary>
+        /// 获取执行返回类型
+        /// </summary>
+        /// <returns></returns>
+        public ITypable GetInvokeReutrnType()
+        {
+            return SuConsts.Void;
+        }
+
+        /// <summary>
+        /// 获取代码
+        /// </summary>
+        /// <returns></returns>
+        public string ToCodeString()
+        {
+            return this.Invoker.ToCodeString();
         }
     }
 }

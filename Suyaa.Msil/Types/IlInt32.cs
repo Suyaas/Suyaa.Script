@@ -5,13 +5,13 @@ using System.Text;
 namespace Suyaa.Msil.Types
 {
     /// <summary>
-    /// 字符串
+    /// IlInt32
     /// </summary>
-    public class IlString : IlType
+    public class IlInt32 : IlType
     {
         /// <summary>
-        /// 字符串
+        /// IlInt32
         /// </summary>
-        public IlString() : base("string") { }
+        public IlInt32() : base("int32") { }
     }
 }

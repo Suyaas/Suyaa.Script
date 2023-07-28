@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Suyaa.Msil
+namespace Suyaa.Msil.Types
 {
     /// <summary>
     /// IL外部类
     /// </summary>
-    public class IlExternClass : NamedAssemblable, IAssemblableType, ITypable
+    public class IlExternClass : IlType
     {
         /// <summary>
         /// 外部程序集
@@ -21,14 +21,8 @@ namespace Suyaa.Msil
         /// <param name="name"></param>
         public IlExternClass(IlExternAssembly assembly, string name) : base(name)
         {
-            this.Assembly = assembly;
+            Assembly = assembly;
         }
-
-        /// <summary>
-        /// 获取类型
-        /// </summary>
-        /// <returns></returns>
-        public IlType GetIlType() => new IlType($"[{this.Assembly.Name}]{this.Name}");
 
         /// <summary>
         /// 获取汇编代码
@@ -36,7 +30,7 @@ namespace Suyaa.Msil
         /// <returns></returns>
         public override string ToAssembly()
         {
-            return $"[{this.Assembly.Name}]{this.Name}";
+            return $"[{Assembly.Name}]{Name}";
         }
     }
 }

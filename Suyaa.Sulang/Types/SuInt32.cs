@@ -1,4 +1,5 @@
 ﻿using Suyaa.Msil;
+using Suyaa.Msil.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,18 +7,16 @@ using System.Text;
 namespace Suyaa.Sulang.Types
 {
     /// <summary>
-    /// 无返回
+    /// Int32
     /// </summary>
-    public sealed class SuVoid : SuStructType, ITypable
+    public sealed class SuInt32 : SuStructType, ITypable
     {
-        // 类型
-        private static SuType _type = new SuType(new IlType("void"));
-
         /// <summary>
-        /// 无返回
+        /// Int32
         /// </summary>
-        public SuVoid() : base(_type)
+        public SuInt32() : base(new SuType(IlConsts.Int32))
         {
+
         }
     }
 }

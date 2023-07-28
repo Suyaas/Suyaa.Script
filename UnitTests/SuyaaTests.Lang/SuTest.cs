@@ -27,15 +27,15 @@ namespace SuyaaTests.Lang
             sy.IO.CreateFolder(path);
             using var sp = new SuProject("test", path);
             sp.Assembly
-                .Call(sp.Global.GetMethod("Use")
-                    .CreateInvoker()
-                    .Param(Suable.Variable("console"))
-                    .Param(Suable.Type(sp.MsCorlib.GetIlExternClass("System.Console").GetIlType()))
+                .Call(sp.Global.GetMethod("Use")!
+                    .CreateInvoker(sp.Assembly.CurrentMethod)
+                    .Param(Suable.Current(sp.Assembly.CurrentMethod).Variable("console"))
+                    .Param(Suable.Current(sp.Assembly.CurrentMethod).Type(sp.MsCorlib.GetIlExternClass("System.Console")))
                 )
-                .Call(Suable.Method(Suable.Struct(sp.Global, "console"), "WriteLine")
+                .Call(Suable.Current(sp.Assembly.CurrentMethod).Method(Suable.Current(sp.Assembly.CurrentMethod).Struct(Suable.Current(sp.Assembly.CurrentMethod).Field(sp.Global, "console")), "WriteLine")
                     .Declare<IlString>()
-                    .CreateInvoker()
-                    .Param(Suable.Value("Helle Suyaa!"))
+                    .CreateInvoker(sp.Assembly.CurrentMethod)
+                    .Param(Suable.Current(sp.Assembly.CurrentMethod).Value("Helle Suyaa!"))
                 );
             sp.Output();
             _output.WriteLine(sp.Build(Platforms.Win_x64));
