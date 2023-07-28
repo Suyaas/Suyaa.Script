@@ -10,7 +10,7 @@ namespace Suyaa.Sulang.Types
     /// <summary>
     /// Su字段
     /// </summary>
-    public sealed class SuField : NamedSuable, ITypable
+    public sealed class SuField : NamedSuable, ITypable, ICodable
     {
 
         /// <summary>
@@ -44,6 +44,15 @@ namespace Suyaa.Sulang.Types
         public IlType GetIlType()
         {
             return GetIlField()?.Type ?? IlConsts.Null;
+        }
+
+        /// <summary>
+        /// 获取代码字符串
+        /// </summary>
+        /// <returns></returns>
+        public string ToCodeString()
+        {
+            return this.Name;
         }
     }
 }
