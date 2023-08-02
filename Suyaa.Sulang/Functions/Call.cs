@@ -70,7 +70,7 @@ namespace Suyaa.Sulang.Functions
         /// <returns></returns>
         public ITypable GetInvokeReutrnType()
         {
-            return SuConsts.Void;
+            return Suable.Void;
         }
 
         /// <summary>

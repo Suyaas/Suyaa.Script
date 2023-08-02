@@ -34,6 +34,10 @@ namespace Suyaa.Sulang
         /// 设置参数值
         /// </summary>
         SetParamterValue = 0x31,
+        /// <summary>
+        /// 将调用结果设置为参数
+        /// </summary>
+        SetParamterFromCall = 0x32,
     }
 
     /// <summary>

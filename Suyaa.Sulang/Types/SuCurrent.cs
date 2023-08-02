@@ -105,6 +105,33 @@ namespace Suyaa.Sulang.Types
             return new SuField(obj, name);
         }
 
+        // 根据类型获取结构体
+        private SuStructType GetStruct(ITypable obj, IlType type)
+        {
+            return type switch
+            {
+                // 字符串
+                IlString _ => new SuString(),
+                // 外部对象
+                IlExternClass cls => new SuExternClass(cls),
+                _ => new SuStructType(obj)
+            };
+        }
+
+        // 从局部对象中创建结构体
+        private SuStructType GetCurrentStruct(ITypable obj, SuCurrent current, SuField suField)
+        {
+            var field = current[suField.Name];
+            return GetStruct(obj, field.Type);
+        }
+
+        // 从局部对象中创建结构体
+        private SuStructType GetGlobalStruct(ITypable obj, SuGlobal sg, SuField suField)
+        {
+            var field = sg[suField.Name];
+            return GetStruct(obj, field.Type);
+        }
+
         /// <summary>
         /// 创建一个结构体
         /// </summary>
@@ -115,14 +142,15 @@ namespace Suyaa.Sulang.Types
             switch (obj)
             {
                 case SuField suField:
+                    // 局部对象
                     if (suField.Object is SuCurrent current)
                     {
-                        var field = current[suField.Name];
-                        return field.Type switch
-                        {
-                            IlString _ => new SuString(),
-                            _ => new SuStructType(obj)
-                        };
+                        return GetCurrentStruct(obj, current, suField);
+                    }
+                    // 全局对象
+                    if (suField.Object is SuGlobal sg)
+                    {
+                        return GetGlobalStruct(obj, sg, suField);
                     }
                     break;
             }

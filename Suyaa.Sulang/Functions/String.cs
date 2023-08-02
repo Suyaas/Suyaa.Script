@@ -14,10 +14,6 @@ namespace Suyaa.Sulang.Functions
     /// </summary>
     public sealed class String : SuMethodInfo
     {
-        /// <summary>
-        /// 所属对象
-        /// </summary>
-        public SuGlobal Global { get; }
 
         ///// <summary>
         ///// 类型
@@ -30,10 +26,9 @@ namespace Suyaa.Sulang.Functions
         /// <param name="sg"></param>
         public String(SuGlobal sg) : base(sg, "String")
         {
-            Global = sg;
             //Type = type;
             this.Declare(new IlType(nameof(IlType)));
-            this.Return(SuConsts.String);
+            this.Return(Suable.String);
         }
 
         /// <summary>
@@ -58,7 +53,7 @@ namespace Suyaa.Sulang.Functions
         /// </summary>
         /// <param name="method"></param>
         /// <param name="fn"></param>
-        public StringInvoker(IlMethod method, String fn) : base(method, fn.Global, fn.Name)
+        public StringInvoker(IlMethod method, String fn) : base(method, fn.Object, fn.Name)
         {
             this.IsPreInvoke = true;
         }
@@ -75,7 +70,7 @@ namespace Suyaa.Sulang.Functions
             // 字段
             var field = new SuField(Current(this.IlMethod), variable.VarName);
             // 返回包含字段和类型的值对象
-            return new SuFieldValue(field, SuConsts.String);
+            return new SuFieldValue(field, Suable.String);
         }
 
         /// <summary>

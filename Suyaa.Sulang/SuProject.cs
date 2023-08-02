@@ -49,7 +49,7 @@ namespace Suyaa.Sulang
         /// </summary>
         public SuProject(string name, string folder)
         {
-            this.Global = SuConsts.Global;
+            this.Global = Suable.Global;
             this.MsCorlib = new MsCorlib();
             var proj = this.IlProject = new IlProject(name, folder);
             this.Assembly = new SuAssembly(this);
@@ -76,6 +76,9 @@ namespace Suyaa.Sulang
         /// </summary>
         public SuProject Output()
         {
+            // 输出临时的sui文件
+            string path = sy.IO.CombinePath(this.IlProject.Folder, this.IlProject.Name + ".sui"); ;
+            sy.IO.WriteUtf8FileContent(path, this.Assembly.ToCodeString());
             // 执行程序集
             this.Assembly.Invoke();
             // 程序输出

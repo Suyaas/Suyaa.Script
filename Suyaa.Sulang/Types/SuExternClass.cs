@@ -1,4 +1,5 @@
 ﻿using Suyaa.Sulang.Exceptions;
+using Suyaa.Sulang.Functions;
 using Suyaa.Sulang.Types;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Suyaa.Msil.Types
         /// <returns></returns>
         public override SuMethodInfo? GetMethod(string name)
         {
-            return new SuMethodInfo(this, name).Keyword(IlKeys.Static);
+            return new ExternMethod(this, name).Keyword(IlKeys.Static);
         }
     }
 }

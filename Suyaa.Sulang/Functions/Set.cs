@@ -69,6 +69,9 @@ namespace Suyaa.Sulang.Functions
                     IlMethod.Ldstr(new IlValue<string>(str.Value));
                     IlMethod.Stloc_s(new IlName(field.Value.Name));
                     break;
+                case SuStack _:
+                    IlMethod.Stloc_s(new IlName(field.Value.Name));
+                    break;
                 default: throw new SuException("Method invoke does not match Set(value)");
             }
         }
@@ -82,6 +85,7 @@ namespace Suyaa.Sulang.Functions
             var obj = this.Object;
             switch (obj)
             {
+                // 处理字段
                 case SuFieldValue suFieldValue:
                     SetFieldString(suFieldValue, this.Paramters[0]);
                     break;

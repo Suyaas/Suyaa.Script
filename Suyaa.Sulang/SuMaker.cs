@@ -92,7 +92,7 @@ namespace Suyaa.Sulang
             if (obj.Code == "$")
             {
                 _level = 0;
-                var structType = SuConsts.Global;
+                var structType = Suable.Global;
                 if (_types.Count <= _level)
                 {
                     _types.Add(structType);
@@ -104,7 +104,7 @@ namespace Suyaa.Sulang
             if (obj.Code.StartsWith("$"))
             {
                 _level = 0;
-                var structType = current.Struct(current.Field(SuConsts.Global, obj.Code.Substring(1)));
+                var structType = current.Struct(current.Field(Suable.Global, obj.Code.Substring(1)));
                 if (_types.Count <= _level)
                 {
                     _types.Add(structType);
@@ -205,6 +205,15 @@ namespace Suyaa.Sulang
             }
         }
 
+        // SetParamterFromCall
+        private void MakeCallParamter(SetParamterFromCall value)
+        {
+            if (_methodInfo is null) throw new SuCodeException(value, $"Method info create fail.");
+            if (_paramters.Any() && _paramters.Last() != null) throw new SuCodeException(value, $"Unexpected paramter '{value.Code}'.");
+            _methodInfo.Declare(_types[_level].GetIlType());
+            _paramters[_paramters.Count - 1] = Suable.Stack;
+        }
+
         #endregion
 
         #region 生效代码
@@ -219,6 +228,7 @@ namespace Suyaa.Sulang
                 case AddMethodCall method: MakeMethodCall(method); break;
                 case AddParamter param: MakeParamter(param); break;
                 case SetParamterValue value: MakeParamterValue(value); break;
+                case SetParamterFromCall value: MakeCallParamter(value); break;
                 default: throw new SuCodeException(code, $"Unexpected code '{code.Code}'.");
             }
         }

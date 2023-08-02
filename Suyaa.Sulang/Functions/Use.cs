@@ -15,10 +15,6 @@ namespace Suyaa.Sulang.Functions
     /// </summary>
     public sealed class Use : SuMethodInfo
     {
-        /// <summary>
-        /// 所属对象
-        /// </summary>
-        public SuGlobal Global { get; }
 
         ///// <summary>
         ///// 类型
@@ -28,10 +24,8 @@ namespace Suyaa.Sulang.Functions
         /// <summary>
         /// 使用语句
         /// </summary>
-        /// <param name="sg"></param>
         public Use(SuGlobal sg) : base(sg, "Use")
         {
-            Global = sg;
             //Type = type;
             this.Declare(new IlType(nameof(IlType)));
         }
@@ -57,8 +51,9 @@ namespace Suyaa.Sulang.Functions
         /// </summary>
         /// <param name="method"></param>
         /// <param name="suUse"></param>
-        public SuUseInvoker(IlMethod method, Use suUse) : base(method, suUse.Global, suUse.Name)
+        public SuUseInvoker(IlMethod method, Use suUse) : base(method, suUse.Object, suUse.Name)
         {
+            this.IsPreInvoke = true;
         }
 
         /// <summary>
@@ -76,14 +71,14 @@ namespace Suyaa.Sulang.Functions
         public override void Invoke()
         {
             var gbl = (SuGlobal)this.Object;
-            if (gbl.ContainsKey(this.Name))
-            {
-                throw new SuException($"Field '{this.Name}' is already exists.");
-            }
             if (this.Paramters.Count != 2) throw new SuException("Method invoke does not match use(IlVariable, IlType)");
             if (!(this.Paramters[0] is SuVariable variable)) throw new SuException("Method invoke does not match use(IlVariable, IlType)");
             if (!(this.Paramters[1] is SuType type)) throw new SuException("Method invoke does not match use(IlVariable, IlType)");
-            gbl.Fields.Add(new IlField(variable.Name, type.GetIlType()).Keyword(SuKeys.Class));
+            if (gbl.ContainsKey(variable.VarName))
+            {
+                throw new SuException($"Field '{variable.VarName}' is already exists.");
+            }
+            gbl.Fields.Add(new IlField(variable.VarName, type.GetIlType()).Keyword(SuKeys.Class));
         }
     }
 }

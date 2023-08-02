@@ -5,6 +5,7 @@ using Suyaa.Sulang.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 
 namespace Suyaa.Sulang
@@ -40,6 +41,10 @@ namespace Suyaa.Sulang
         /// 方法参数
         /// </summary>
         MethodParam = 0x40,
+        /// <summary>
+        /// 方法完成
+        /// </summary>
+        MethodFinish = 0x80,
 
         /// <summary>
         /// 字符串
@@ -65,8 +70,6 @@ namespace Suyaa.Sulang
     /// </summary>
     public sealed class SuParser : Disposable
     {
-        // 状态
-        private SuParserStatus _status;
         // 字符串缓存
         private StringBuilder _cache;
         private StringBuilder _code;
@@ -75,6 +78,8 @@ namespace Suyaa.Sulang
         private int _line;
         private int _pos;
         private long _methodId;
+        // 状态
+        private List<SuParserStatus> _statuses;
         // 调用链
         private List<long> _methods;
 
@@ -99,20 +104,20 @@ namespace Suyaa.Sulang
             _code = new StringBuilder();
             Codes = new List<SuParserCode>();
             _methods = new List<long>() { 0 };
+            _statuses = new List<SuParserStatus>() { SuParserStatus.None };
         }
 
         // 初始化
         private void Init()
         {
             // 变量初始化
-            _status = SuParserStatus.None;
             _cache.Clear();
             _code.Clear();
             _level = 0;
             _line = 1;
             _pos = 0;
-            _methods.Clear();
-            _methods.Add(0);
+            _methods[0] = 0;
+            _statuses[0] = SuParserStatus.None;
         }
 
         #region 格式化脚本
@@ -120,24 +125,25 @@ namespace Suyaa.Sulang
         // 反斜杠 \
         private void ParseBackslash(char chr)
         {
+            var status = _statuses[_level];
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 如果处于转义中，则转为常规字符串
-            if (_status == SuParserStatus.StringEscape)
+            if (status == SuParserStatus.StringEscape)
             {
                 _code.Append(chr);
-                _status = SuParserStatus.String;
+                _statuses[_level] = SuParserStatus.String;
                 return;
             }
             // 在字符串中，则进行转义
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
-                _status = SuParserStatus.StringEscape;
+                _statuses[_level] = SuParserStatus.StringEscape;
                 return;
             }
             throw new SuException($"Unexpected character '{chr}'.");
@@ -146,26 +152,27 @@ namespace Suyaa.Sulang
         // 斜杠 /
         private void ParseSlash(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
             // 在字符串中则正常添加内容
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
                 return;
             }
             // 退出块注释
-            if (_status == SuParserStatus.BlockNote && _cache.Length >= 3 && _cache[_cache.Length - 1] == '*')
+            if (status == SuParserStatus.BlockNote && _cache.Length >= 3 && _cache[_cache.Length - 1] == '*')
             {
                 _cache.Clear();
-                _status = SuParserStatus.None;
+                _statuses[_level] = SuParserStatus.None;
                 return;
             }
             _cache.Append(chr);
             // 进入行注释
             if (_cache.Length == 2)
             {
-                _status = SuParserStatus.LineNote;
+                _statuses[_level] = SuParserStatus.LineNote;
                 return;
             }
         }
@@ -173,16 +180,17 @@ namespace Suyaa.Sulang
         // 星号 *
         private void ParseAsterisk(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 在字符串中则正常添加内容
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
                 return;
@@ -191,7 +199,7 @@ namespace Suyaa.Sulang
             if (_cache.Length == 1 && _cache[0] == '/')
             {
                 _cache.Append(chr);
-                _status = SuParserStatus.BlockNote;
+                _statuses[_level] = SuParserStatus.BlockNote;
                 return;
             }
             // 添加
@@ -201,54 +209,56 @@ namespace Suyaa.Sulang
         // 引号 "
         private void ParseQuotation(char chr)
         {
+            var status = _statuses[_level];
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 如果处于转义中，则取消转义
-            if (_status == SuParserStatus.StringEscape)
+            if (status == SuParserStatus.StringEscape)
             {
                 _cache.Append(chr);
-                _status = SuParserStatus.String;
+                _statuses[_level] = SuParserStatus.String;
                 return;
             }
             // 在字符串中则结束字符串定义，恢复到无状态
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
-                _status = SuParserStatus.None;
+                _statuses[_level] = SuParserStatus.None;
                 return;
             }
             // 如果处于非空或非参数状态，则抛出异常
-            if (_status != SuParserStatus.None && _status != SuParserStatus.MethodParam) throw new SuException($"Unexpected character '{chr}'.");
+            if (status != SuParserStatus.None && status != SuParserStatus.MethodParam) throw new SuException($"Unexpected character '{chr}'.");
             // 如果已经有内容，则报错
             if (_code.Length > 0) throw new SuException($"Unexpected character '{chr}'.");
             // 添加内容并设置字符串模式
             _code.Append(chr);
-            _status = SuParserStatus.String;
+            _statuses[_level] = SuParserStatus.String;
         }
 
         // 左括号 (
         private void ParseLeftBracket(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 处理字符串
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
                 return;
             }
             // 如果处于非函数名称状态，则抛出异常
-            if (_status != SuParserStatus.MethodName) throw new SuException($"Unexpected character '{chr}'.");
+            if (status != SuParserStatus.MethodName) throw new SuException($"Unexpected character '{chr}'.");
             // 函数必须是.开头或者$@
             if (_code[0] != '.' && !(_code[0] == '$' && _code[1] == '@')) throw new SuException($"Unexpected character '{chr}'.");
             string funName;
@@ -276,7 +286,10 @@ namespace Suyaa.Sulang
             this.Codes.Add(methodCall);
             // 常规添加字符，同时代码层级+1
             //_code.Append(chr);
+            // 设置状态为参数
+            _statuses[_level] = SuParserStatus.MethodParam;
             _level++;
+            if (_level >= _statuses.Count) _statuses.Add(SuParserStatus.None);
             // 设置调用链
             if (_methods.Count <= _level)
             {
@@ -288,7 +301,7 @@ namespace Suyaa.Sulang
             }
             _methodId = methodCall.Id;
             // 设置状态为参数
-            _status = SuParserStatus.MethodParam;
+            _statuses[_level] = SuParserStatus.None;
             // 清理代码缓存
             _code.Clear();
         }
@@ -296,55 +309,71 @@ namespace Suyaa.Sulang
         // 右括号 )
         private void ParseRightBracket(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 处理字符串
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
                 return;
             }
-            // 添加未处理的参数
-            if (_code.Length > 0)
+            // 处理函数传参
+            if (status == SuParserStatus.MethodFinish)
             {
-                var lastCode = this.Codes.Last();
-                // 层级有变化，则先添加一个参数添加操作
-                if (lastCode.Level != _level)
+                if (_code.Length > 0) throw new SuException($"Unexpected character '{chr}'.");
+                this.Codes.Add(new SetParamterFromCall(_line, _pos, _level) { MethodId = _methodId });
+            }
+            else
+            {
+                // 添加未处理的参数
+                if (_code.Length > 0)
                 {
-                    this.Codes.Add(new AddParamter(_line, _pos, _level, _methodId) { MethodId = _methodId });
+                    var lastCode = this.Codes.Last();
+                    // 层级有变化，则先添加一个参数添加操作
+                    if (lastCode.Level != _level)
+                    {
+                        this.Codes.Add(new AddParamter(_line, _pos, _level, _methodId) { MethodId = _methodId });
+                    }
+                    this.Codes.Add(new SetParamterValue(_line, _pos, _level, _code.ToString()) { MethodId = _methodId });
+                    // 清理代码缓存
+                    _code.Clear();
+                    // 设置本层状态
+                    _statuses[_level] = SuParserStatus.None;
                 }
-                this.Codes.Add(new SetParamterValue(_line, _pos, _level, _code.ToString()) { MethodId = _methodId });
-                // 清理代码缓存
-                _code.Clear();
             }
             // 常规添加字符，同时代码层级-1
             //_code.Append(chr);
             _level--;
+            // 设置本层状态
+            _statuses[_level] = SuParserStatus.MethodFinish;
+            // 设置当前方法
             _methodId = _methods[_level];
         }
 
         // 换行 \n
         private void ParseWrap(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '\\n'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '\\n'.");
             // 如果在行注释中，则取消注释
-            if (_status == SuParserStatus.LineNote)
+            if (status == SuParserStatus.LineNote)
             {
                 _cache.Clear();
-                _status = SuParserStatus.None;
+                _statuses[_level] = SuParserStatus.None;
                 _line++;
                 _pos = 0;
                 return;
             }
             // 当在块注释中，添加换行
-            if (_status == SuParserStatus.BlockNote)
+            if (status == SuParserStatus.BlockNote)
             {
                 _cache.Append(chr);
                 _line++;
@@ -359,47 +388,54 @@ namespace Suyaa.Sulang
         // 美元符号 $
         private void ParseDollar(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 在字符串中则正常添加内容
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
                 return;
             }
             // 如果处于非空或非参数状态，则抛出异常
-            if (_status != SuParserStatus.None && _status != SuParserStatus.MethodParam) throw new SuException($"Unexpected character '{chr}'.");
+            if (status != SuParserStatus.None && status != SuParserStatus.MethodParam) throw new SuException($"Unexpected character '{chr}'.");
+            if (_level > 0)
+            {
+                // 添加一个参数定义
+                this.Codes.Add(new AddParamter(_line, _pos, _level, _methodId) { MethodId = _methodId });
+            }
             // 添加代码
             _code.Append(chr);
             // 设置状态为方法名称
-            _status = SuParserStatus.MethodName;
+            _statuses[_level] = SuParserStatus.MethodName;
         }
 
         // 点号 .
         private void ParseDot(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 在字符串中则正常添加内容
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
                 return;
             }
             // 在方法名称中，则处理对象操作
-            if (_status == SuParserStatus.MethodName)
+            if (status == SuParserStatus.MethodName)
             {
                 if (_code.Length <= 0) throw new SuException($"Unexpected character '{chr}'.");
                 // 兼容$对象
@@ -439,22 +475,23 @@ namespace Suyaa.Sulang
             }
             // 添加
             _code.Append(chr);
-            _status = SuParserStatus.MethodName;
+            _statuses[_level] = SuParserStatus.MethodName;
         }
 
         // 逗号 ,
         private void ParseComma(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 在字符串中则正常添加内容
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
                 return;
@@ -481,16 +518,17 @@ namespace Suyaa.Sulang
         // 空格 ' '
         private void ParseSpace(char chr)
         {
+            var status = _statuses[_level];
             // 如果处于转义中，则抛出异常
-            if (_status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
+            if (status == SuParserStatus.StringEscape) throw new SuException($"Unexpected character '{chr}'.");
             // 处理注释
-            if (_status.IsNote())
+            if (status.IsNote())
             {
                 _cache.Append(chr);
                 return;
             }
             // 在字符串中则正常添加内容
-            if (_status == SuParserStatus.String)
+            if (status == SuParserStatus.String)
             {
                 _code.Append(chr);
                 return;
@@ -534,7 +572,7 @@ namespace Suyaa.Sulang
                     case '\n': ParseWrap(chr); break;
                     default:
                         // 处理注释
-                        if (_status.IsNote())
+                        if (_statuses[_level].IsNote())
                         {
                             _cache.Append(chr);
                             continue;
@@ -545,6 +583,8 @@ namespace Suyaa.Sulang
                         break;
                 }
             }
+            if (_level != 0) throw new SuException($"The code has not yet ended.");
+            if (_statuses[_level] != SuParserStatus.MethodFinish) throw new SuException($"The code has not yet ended.");
         }
 
         #endregion
@@ -557,17 +597,14 @@ namespace Suyaa.Sulang
         {
             // 格式化脚本 - 清理所有的注释与无用的换行符
             ParseToCodes(script);
-#if DEBUG
-            // 输出临时的sup文件
-            string tempPath = sy.IO.GetFullPath("./parser");
-            sy.IO.CreateFolder(tempPath);
+            // 输出sup文件
+            string path = sy.IO.CombinePath(this.Project.IlProject.Folder, this.Project.IlProject.Name + ".sup");
             StringBuilder sb = new StringBuilder();
             foreach (var code in this.Codes)
             {
                 sb.AppendLine(code.ToCodeString());
             }
-            sy.IO.WriteUtf8FileContent(sy.IO.CombinePath(tempPath, "temp.sup"), sb.ToString());
-#endif
+            sy.IO.WriteUtf8FileContent(path, sb.ToString());
             // 生效第一层代码
             using var maker = new SuMaker(this, this.Codes.Where(d => d.Level == 0).ToList());
             maker.Make();

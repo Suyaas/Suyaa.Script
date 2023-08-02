@@ -42,6 +42,8 @@ namespace Suyaa.Sulang.Types
             this.Methods.Add(new Functions.Int32(this));
             // String函数
             this.Methods.Add(new Functions.String(this));
+            // Join函数
+            this.Methods.Add(new Functions.Join(this));
         }
     }
 }

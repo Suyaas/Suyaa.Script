@@ -81,12 +81,6 @@ namespace Suyaa.Sulang
         /// </summary>
         public void Invoke()
         {
-#if DEBUG
-            // 输出临时的sup文件
-            string tempPath = sy.IO.GetFullPath("./parser");
-            sy.IO.CreateFolder(tempPath);
-            sy.IO.WriteUtf8FileContent(sy.IO.CombinePath(tempPath, "temp.sui"), ToCodeString());
-#endif
             // 依次执行解析方法
             foreach (var invoker in Invokers) invoker.Invoke();
             // 添加结束指令
@@ -99,7 +93,7 @@ namespace Suyaa.Sulang
         /// <returns></returns>
         public ITypable GetInvokeReutrnType()
         {
-            return SuConsts.Void;
+            return Suable.Void;
         }
 
         /// <summary>

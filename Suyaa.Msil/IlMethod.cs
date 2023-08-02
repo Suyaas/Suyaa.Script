@@ -167,6 +167,32 @@ namespace Suyaa.Msil
         }
 
         /// <summary>
+        /// ldloc.x
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Ldloc(int index)
+        {
+            IlInstruction instruction = new IlInstruction($"ldloc.{index}");
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
+        /// stloc.x
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Stloc(int index)
+        {
+            IlInstruction instruction = new IlInstruction($"stloc.{index}");
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
         /// call
         /// </summary>
         /// <param name="func"></param>

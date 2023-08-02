@@ -31,7 +31,7 @@ namespace Suyaa.Sulang.Functions
             Global = sg;
             //Type = type;
             this.Declare(new IlType(nameof(IlType)));
-            this.Return(SuConsts.Int32);
+            this.Return(Suable.Int32);
         }
 
         /// <summary>

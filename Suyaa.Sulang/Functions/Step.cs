@@ -15,10 +15,6 @@ namespace Suyaa.Sulang.Functions
     /// </summary>
     public sealed class Step : SuMethodInfo
     {
-        /// <summary>
-        /// 所属对象
-        /// </summary>
-        public SuGlobal Global { get; }
 
         ///// <summary>
         ///// 类型
@@ -31,7 +27,6 @@ namespace Suyaa.Sulang.Functions
         /// <param name="sg"></param>
         public Step(SuGlobal sg) : base(sg, "Step")
         {
-            Global = sg;
             //Type = type;
             this.Declare(new IlType(nameof(IlType)));
         }
@@ -57,7 +52,7 @@ namespace Suyaa.Sulang.Functions
         /// </summary>
         /// <param name="method"></param>
         /// <param name="step"></param>
-        public SuStepInvoker(IlMethod method, Step step) : base(method, step.Global, step.Name)
+        public SuStepInvoker(IlMethod method, Step step) : base(method, step.Object, step.Name)
         {
         }
 

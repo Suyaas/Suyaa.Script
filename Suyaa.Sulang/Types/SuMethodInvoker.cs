@@ -92,6 +92,8 @@ namespace Suyaa.Sulang.Types
                     case SuField suField:
                         IlMethod.Ldloc_s(new IlName(suField.Name));
                         break;
+                    // 跳过堆栈变量处理
+                    case SuStack _: break;
                     default: throw new NotSupportedException($"Paramter '{p.GetType().FullName}' not supported.");
                 }
             }
@@ -142,7 +144,7 @@ namespace Suyaa.Sulang.Types
             {
                 sb.Append(this.Object.GetIlType().Name);
             }
-            sb.Append('.');
+            sb.Append(this.Keywords.Contains(IlKeys.Static) ? "::" : ".");
             sb.Append(this.Name);
             if (Paramters.Any())
             {
@@ -161,12 +163,14 @@ namespace Suyaa.Sulang.Types
                         sb.Append(p.ToString());
                     }
                 }
-                sb.AppendLine(")");
+                sb.Append(")");
             }
             else
             {
-                sb.AppendLine("()");
+                sb.Append("()");
             }
+            sb.Append(" -> ");
+            sb.AppendLine(this.ReturnType.GetType().FullName);
             return sb.ToString();
         }
     }
