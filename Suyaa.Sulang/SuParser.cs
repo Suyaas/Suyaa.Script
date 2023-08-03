@@ -404,7 +404,7 @@ namespace Suyaa.Sulang
                 return;
             }
             // 如果处于非空或非参数状态，则抛出异常
-            if (status != SuParserStatus.None && status != SuParserStatus.MethodParam) throw new SuException($"Unexpected character '{chr}'.");
+            if (status != SuParserStatus.None && status != SuParserStatus.MethodParam && status != SuParserStatus.MethodFinish) throw new SuException($"Unexpected character '{chr}'.");
             if (_level > 0)
             {
                 // 添加一个参数定义
@@ -596,7 +596,14 @@ namespace Suyaa.Sulang
         public void Parse(string script)
         {
             // 格式化脚本 - 清理所有的注释与无用的换行符
-            ParseToCodes(script);
+            try
+            {
+                ParseToCodes(script);
+            }
+            catch (Exception ex)
+            {
+                throw new SuException($"Parse line {_line} pos {_pos} error: {ex.Message}");
+            }
             // 输出sup文件
             string path = sy.IO.CombinePath(this.Project.IlProject.Folder, this.Project.IlProject.Name + ".sup");
             StringBuilder sb = new StringBuilder();

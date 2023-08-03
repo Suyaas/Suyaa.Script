@@ -21,6 +21,14 @@ namespace Suyaa.Sulang.Types
             this.Methods.Add(new Set(this));
             // Add函数
             this.Methods.Add(new Add(this));
+            // Sub函数
+            this.Methods.Add(new Sub(this));
+            // Mul函数
+            this.Methods.Add(new Mul(this));
+            // Div函数
+            this.Methods.Add(new Div(this));
+            // Divi函数
+            this.Methods.Add(new Divi(this));
         }
     }
 }

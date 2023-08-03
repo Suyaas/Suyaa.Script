@@ -246,6 +246,54 @@ namespace Suyaa.Msil
         }
 
         /// <summary>
+        /// sub
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Sub()
+        {
+            IlInstruction instruction = new IlInstruction("sub");
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
+        /// mul
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Mul()
+        {
+            IlInstruction instruction = new IlInstruction("mul");
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
+        /// div
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Div()
+        {
+            IlInstruction instruction = new IlInstruction("div");
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
+        /// div.un
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Div_Un()
+        {
+            IlInstruction instruction = new IlInstruction("div.un");
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
         /// nop
         /// </summary>
         /// <param name="content"></param>

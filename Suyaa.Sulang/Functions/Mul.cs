@@ -15,13 +15,13 @@ namespace Suyaa.Sulang.Functions
     /// <summary>
     /// 使用语句
     /// </summary>
-    public sealed class Add : SuMethodInfo
+    public sealed class Mul : SuMethodInfo
     {
         /// <summary>
         /// 使用语句
         /// </summary>
         /// <param name="obj"></param>
-        public Add(ITypable obj) : base(obj, "Add")
+        public Mul(ITypable obj) : base(obj, "Mul")
         {
             this.Declare(new IlType(nameof(IlType)));
             this.Return(obj);
@@ -33,14 +33,14 @@ namespace Suyaa.Sulang.Functions
         /// <returns></returns>
         public override SuMethodInvoker CreateInvoker(IlMethod method, SuParserCode code)
         {
-            return new AddInvoker(method, code, this);
+            return new MulInvoker(method, code, this);
         }
     }
 
     /// <summary>
     /// Use方法执行器
     /// </summary>
-    public class AddInvoker : SuMethodInvoker
+    public class MulInvoker : SuMethodInvoker
     {
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Suyaa.Sulang.Functions
         /// <param name="method"></param>
         /// <param name="code"></param>
         /// <param name="fun"></param>
-        public AddInvoker(IlMethod method, SuParserCode code, Add fun) : base(method, code, fun.Object, fun.Name)
+        public MulInvoker(IlMethod method, SuParserCode code, Mul fun) : base(method, code, fun.Object, fun.Name)
         {
             this.Return(fun.Object);
         }
@@ -78,7 +78,7 @@ namespace Suyaa.Sulang.Functions
                 default: throw new SuCodeException(Code, $"Not supported type '{value.GetType().FullName}'");
             }
             // 添加加法指令
-            IlMethod.Add();
+            IlMethod.Mul();
             // 添加计算返回
             IlMethod.Stloc_s(new IlName(field.Value.Name));
         }
