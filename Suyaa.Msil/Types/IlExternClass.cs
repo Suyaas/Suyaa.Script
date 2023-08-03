@@ -30,7 +30,18 @@ namespace Suyaa.Msil.Types
         /// <returns></returns>
         public override string ToAssembly()
         {
-            return $"[{Assembly.Name}]{Name}";
+            StringBuilder sb = new StringBuilder();
+            foreach (var key in Keywords)
+            {
+                sb.Append(key);
+                sb.Append(' ');
+            }
+            sb.Append('[');
+            sb.Append(Assembly.Name);
+            sb.Append(']');
+            sb.Append(this.Name);
+            return sb.ToString();
+            //return $"[{Assembly.Name}]{Name}";
         }
     }
 }

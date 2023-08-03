@@ -1,5 +1,6 @@
 ﻿using Suyaa.Exceptions;
 using Suyaa.Msil;
+using Suyaa.Msil.ExternAssemblies;
 using Suyaa.Msil.Types;
 using Suyaa.Sulang.Exceptions;
 using Suyaa.Sulang.Types;
@@ -38,7 +39,10 @@ namespace Suyaa.Sulang.Functions
                         this.Return(Suable.Void);
                         break;
                     }
-                    throw new TypeNotSupportedException(type);
+                    var msCorlib = new MsCorlib();
+                    this.Return(new SuType(msCorlib.GetIlExternClass(type.FullName).Keyword(IlKeys.ValueType)));
+                    //throw new TypeNotSupportedException(type);
+                    break;
                 default: throw new TypeNotSupportedException(type);
             }
         }
@@ -78,6 +82,19 @@ namespace Suyaa.Sulang.Functions
         public override ITypable GetInvokeReutrnType()
         {
             return this.ReturnType;
+        }
+        
+        /// <summary>
+        /// 执行
+        /// </summary>
+        public override void Invoke()
+        {
+            base.Invoke();
+            if(this.ReturnType is SuVoid)
+            {
+                // 添加补码指令
+                IlMethod.Nop();
+            }
         }
     }
 }

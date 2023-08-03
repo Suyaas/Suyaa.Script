@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Suyaa.Msil.Values;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,14 @@ namespace Suyaa.Msil
     /// </summary>
     public class IlMethod : NamedAssemblable, IKeywordsable
     {
+        // 堆栈数量
+        private int _stack;
+
+        /// <summary>
+        /// 当前堆栈数量
+        /// </summary>
+        public int Stack => _stack;
+
         /// <summary>
         /// 关键字
         /// </summary>
@@ -124,6 +133,7 @@ namespace Suyaa.Msil
             IlInstruction instruction = new IlInstruction("ldstr");
             instruction.Paramters.Add(content);
             this.Instructions.Add(instruction);
+            _stack++;
             return this;
         }
 
@@ -137,6 +147,7 @@ namespace Suyaa.Msil
             IlInstruction instruction = new IlInstruction("ldloca.s");
             instruction.Paramters.Add(content);
             this.Instructions.Add(instruction);
+            _stack++;
             return this;
         }
 
@@ -150,19 +161,7 @@ namespace Suyaa.Msil
             IlInstruction instruction = new IlInstruction("ldloc.s");
             instruction.Paramters.Add(content);
             this.Instructions.Add(instruction);
-            return this;
-        }
-
-        /// <summary>
-        /// stloc.s
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        public IlMethod Stloc_s(IAssemblable content)
-        {
-            IlInstruction instruction = new IlInstruction("stloc.s");
-            instruction.Paramters.Add(content);
-            this.Instructions.Add(instruction);
+            _stack++;
             return this;
         }
 
@@ -176,6 +175,21 @@ namespace Suyaa.Msil
         {
             IlInstruction instruction = new IlInstruction($"ldloc.{index}");
             this.Instructions.Add(instruction);
+            _stack++;
+            return this;
+        }
+
+        /// <summary>
+        /// stloc.s
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Stloc_s(IAssemblable content)
+        {
+            IlInstruction instruction = new IlInstruction("stloc.s");
+            instruction.Paramters.Add(content);
+            this.Instructions.Add(instruction);
+            _stack--;
             return this;
         }
 
@@ -189,6 +203,7 @@ namespace Suyaa.Msil
         {
             IlInstruction instruction = new IlInstruction($"stloc.{index}");
             this.Instructions.Add(instruction);
+            _stack--;
             return this;
         }
 
@@ -198,10 +213,35 @@ namespace Suyaa.Msil
         /// <param name="func"></param>
         /// <returns></returns>
         public IlMethod Call<T>(T func)
-            where T : IAssemblableInvoker
+            where T : IlMethodInvoker
         {
             IlInstruction instruction = new IlInstruction("call");
             instruction.Paramters.Add(func);
+            this.Instructions.Add(instruction);
+            _stack = func.ReturnType is null ? 0 : 1;
+            return this;
+        }
+
+        /// <summary>
+        /// nop
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Nop()
+        {
+            IlInstruction instruction = new IlInstruction("nop");
+            this.Instructions.Add(instruction);
+            return this;
+        }
+
+        /// <summary>
+        /// pop
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Pop()
+        {
+            IlInstruction instruction = new IlInstruction("pop");
             this.Instructions.Add(instruction);
             return this;
         }
@@ -226,6 +266,7 @@ namespace Suyaa.Msil
         /// <param name="name"></param>
         public IlMethod(IlType type, string name) : base(name)
         {
+            _stack = 0;
             this.Keywords = new List<string>();
             this.Attachs = new List<string>();
             this.ClassType = type;

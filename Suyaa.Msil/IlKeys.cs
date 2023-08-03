@@ -63,5 +63,10 @@ namespace Suyaa.Msil
         /// managed
         /// </summary>
         public const string Managed = "managed";
+
+        /// <summary>
+        /// valuetype
+        /// </summary>
+        public const string ValueType = "valuetype";
     }
 }
