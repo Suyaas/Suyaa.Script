@@ -27,6 +27,11 @@ namespace Suyaa.Sulang.Types
         public IlMethod IlMethod { get; }
 
         /// <summary>
+        /// 关联字段信息
+        /// </summary>
+        public SuParserCode Code { get; }
+
+        /// <summary>
         /// 是否提前执行
         /// </summary>
         public bool IsPreInvoke { get; protected set; }
@@ -59,12 +64,14 @@ namespace Suyaa.Sulang.Types
         /// Su方法
         /// </summary>
         /// <param name="method"></param>
+        /// <param name="code"></param>
         /// <param name="obj"></param>
         /// <param name="name"></param>
-        public SuMethodInvoker(IlMethod method, ITypable obj, string name) : base(obj, name)
+        public SuMethodInvoker(IlMethod method, SuParserCode code, ITypable obj, string name) : base(obj, name)
         {
             this.Paramters = new List<ITypable>();
             IlMethod = method;
+            Code = code;
         }
 
         /// <summary>
@@ -94,7 +101,7 @@ namespace Suyaa.Sulang.Types
                         break;
                     // 跳过堆栈变量处理
                     case SuStack _: break;
-                    default: throw new NotSupportedException($"Paramter '{p.GetType().FullName}' not supported.");
+                    default: throw new SuCodeException(this.Code, $"Paramter '{p.GetType().FullName}' not supported.");
                 }
             }
             // 建立il执行器

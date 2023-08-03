@@ -35,9 +35,9 @@ namespace Suyaa.Sulang.Functions
         /// 创建执行器
         /// </summary>
         /// <returns></returns>
-        public override SuMethodInvoker CreateInvoker(IlMethod method)
+        public override SuMethodInvoker CreateInvoker(IlMethod method, SuParserCode code)
         {
-            return new StringInvoker(method, this);
+            return new StringInvoker(method, code, this);
         }
     }
 
@@ -52,9 +52,11 @@ namespace Suyaa.Sulang.Functions
         /// Su方法
         /// </summary>
         /// <param name="method"></param>
+        /// <param name="code"></param>
         /// <param name="fn"></param>
-        public StringInvoker(IlMethod method, String fn) : base(method, fn.Object, fn.Name)
+        public StringInvoker(IlMethod method, SuParserCode code, String fn) : base(method, code, fn.Object, fn.Name)
         {
+            // 设置为预执行
             this.IsPreInvoke = true;
         }
 

@@ -99,9 +99,9 @@ namespace Suyaa.Sulang.Types
         /// 创建一个执行器
         /// </summary>
         /// <returns></returns>
-        public virtual SuMethodInvoker CreateInvoker(IlMethod method)
+        public virtual SuMethodInvoker CreateInvoker(IlMethod method, SuParserCode code)
         {
-            var invoker = new SuMethodInvoker(method, this.Object, this.Name);
+            var invoker = new SuMethodInvoker(method, code, this.Object, this.Name);
             invoker.Declares.AddRange(this.Declares);
             invoker.Keywords.AddRange(this.Keywords);
             invoker.Return(this.ReturnType);

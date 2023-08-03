@@ -7,6 +7,7 @@ using Suyaa.Msil;
 using Suyaa.Msil.ExternAssemblies;
 using Suyaa.Msil.Types;
 using Xunit.Abstractions;
+using Suyaa.Sulang.Codes;
 
 namespace SuyaaTests.Lang
 {
@@ -28,13 +29,13 @@ namespace SuyaaTests.Lang
             using var sp = new SuProject("test", path);
             sp.Assembly
                 .Call(sp.Global.GetMethod("Use")!
-                    .CreateInvoker(sp.Assembly.CurrentMethod)
+                    .CreateInvoker(sp.Assembly.CurrentMethod, new NoCode())
                     .Param(Suable.Current(sp.Assembly.CurrentMethod).Variable("console"))
                     .Param(Suable.Current(sp.Assembly.CurrentMethod).Type(sp.MsCorlib.GetIlExternClass("System.Console")))
                 )
                 .Call(Suable.Current(sp.Assembly.CurrentMethod).Method(Suable.Current(sp.Assembly.CurrentMethod).Struct(Suable.Current(sp.Assembly.CurrentMethod).Field(sp.Global, "console")), "WriteLine")
                     .Declare<IlString>()
-                    .CreateInvoker(sp.Assembly.CurrentMethod)
+                    .CreateInvoker(sp.Assembly.CurrentMethod, new NoCode())
                     .Param(Suable.Current(sp.Assembly.CurrentMethod).Value("Helle Suyaa!"))
                 );
             sp.Output();

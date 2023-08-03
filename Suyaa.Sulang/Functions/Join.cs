@@ -37,9 +37,9 @@ namespace Suyaa.Sulang.Functions
         /// 创建执行器
         /// </summary>
         /// <returns></returns>
-        public override SuMethodInvoker CreateInvoker(IlMethod method)
+        public override SuMethodInvoker CreateInvoker(IlMethod method, SuParserCode code)
         {
-            return new JoinInvoker(method, this);
+            return new JoinInvoker(method, code, this);
         }
     }
 
@@ -54,8 +54,9 @@ namespace Suyaa.Sulang.Functions
         /// Su方法
         /// </summary>
         /// <param name="method"></param>
+        /// <param name="code"></param>
         /// <param name="fn"></param>
-        public JoinInvoker(IlMethod method, Join fn) : base(method, fn.Object, fn.Name)
+        public JoinInvoker(IlMethod method, SuParserCode code, Join fn) : base(method, code, fn.Object, fn.Name)
         {
         }
 
@@ -70,6 +71,50 @@ namespace Suyaa.Sulang.Functions
             return new SuStackValue(Suable.String);
         }
 
+        // 执行字段参数
+        private void InvokeInt32FieldParamter(IlField ilField)
+        {
+            IlMethod.Ldloc_s(new IlName(ilField.Name));
+            // 初始化ToString函数
+            var msCorlib = new MsCorlib();
+            var invoker = new IlMethodInvoker(msCorlib.GetIlExternClass("System.Convert"), "ToString") { IsStatic = true };
+            invoker.Return(IlConsts.String);
+            invoker.Param<IlInt32>();
+            // 添加ToString函数调用
+            IlMethod.Call(invoker);
+        }
+
+        // 执行字段参数
+        private void InvokeFieldParamter(IlField ilField)
+        {
+            switch (ilField.Type)
+            {
+                case IlString _:
+                    IlMethod.Ldloc_s(new IlName(ilField.Name));
+                    break;
+                case IlInt32 _:
+                    InvokeInt32FieldParamter(ilField);
+                    break;
+                default:
+                    throw new TypeNotSupportedException(ilField.Type.GetType());
+            }
+        }
+
+        // 执行字段参数
+        private void InvokeFieldParamter(SuField suField)
+        {
+            switch (suField.Object)
+            {
+                case SuCurrent current:
+                    var field = current.GetField(suField.Name);
+                    if (field is null) throw new SuException($"Field '{suField.Name}' not found.");
+                    InvokeFieldParamter(field);
+                    break;
+                default:
+                    throw new TypeNotSupportedException(suField.Object.GetType());
+            }
+        }
+
         // 执行参数
         private void InvokeParamter(ITypable obj)
         {
@@ -79,9 +124,10 @@ namespace Suyaa.Sulang.Functions
                     IlMethod.Ldstr(new IlValue<string>(str.Value));
                     break;
                 case SuField suField:
-                    IlMethod.Ldloc_s(new IlName(suField.Name));
+                    InvokeFieldParamter(suField);
                     break;
-                default: throw new TypeNotSupportedException(obj.GetType());
+                default:
+                    throw new TypeNotSupportedException(obj.GetType());
             }
         }
 

@@ -34,9 +34,9 @@ namespace Suyaa.Sulang.Functions
         /// 创建执行器
         /// </summary>
         /// <returns></returns>
-        public override SuMethodInvoker CreateInvoker(IlMethod method)
+        public override SuMethodInvoker CreateInvoker(IlMethod method, SuParserCode code)
         {
-            return new SuUseInvoker(method, this);
+            return new SuUseInvoker(method, code, this);
         }
     }
 
@@ -50,8 +50,9 @@ namespace Suyaa.Sulang.Functions
         /// Su方法
         /// </summary>
         /// <param name="method"></param>
+        /// <param name="code"></param>
         /// <param name="suUse"></param>
-        public SuUseInvoker(IlMethod method, Use suUse) : base(method, suUse.Object, suUse.Name)
+        public SuUseInvoker(IlMethod method, SuParserCode code, Use suUse) : base(method, code, suUse.Object, suUse.Name)
         {
             this.IsPreInvoke = true;
         }

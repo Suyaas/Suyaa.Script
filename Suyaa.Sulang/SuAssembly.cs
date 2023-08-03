@@ -82,7 +82,10 @@ namespace Suyaa.Sulang
         public void Invoke()
         {
             // 依次执行解析方法
-            foreach (var invoker in Invokers) invoker.Invoke();
+            foreach (var invoker in Invokers)
+            {
+                invoker.Invoke();
+            }
             // 清理堆栈
             if (this.CurrentMethod.Stack > 0) this.CurrentMethod.Pop();
             // 添加结束指令

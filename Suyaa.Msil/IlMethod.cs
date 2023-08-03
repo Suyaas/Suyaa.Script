@@ -169,11 +169,23 @@ namespace Suyaa.Msil
         /// ldloc.x
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="content"></param>
         /// <returns></returns>
         public IlMethod Ldloc(int index)
         {
             IlInstruction instruction = new IlInstruction($"ldloc.{index}");
+            this.Instructions.Add(instruction);
+            _stack++;
+            return this;
+        }
+
+        /// <summary>
+        /// ldc.i4.x
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public IlMethod Ldc_i4(int value)
+        {
+            IlInstruction instruction = new IlInstruction($"ldc.i4.{value}");
             this.Instructions.Add(instruction);
             _stack++;
             return this;
@@ -197,7 +209,6 @@ namespace Suyaa.Msil
         /// stloc.x
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="content"></param>
         /// <returns></returns>
         public IlMethod Stloc(int index)
         {
@@ -219,6 +230,18 @@ namespace Suyaa.Msil
             instruction.Paramters.Add(func);
             this.Instructions.Add(instruction);
             _stack = func.ReturnType is null ? 0 : 1;
+            return this;
+        }
+
+        /// <summary>
+        /// add
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public IlMethod Add()
+        {
+            IlInstruction instruction = new IlInstruction("add");
+            this.Instructions.Add(instruction);
             return this;
         }
 

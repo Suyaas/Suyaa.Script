@@ -35,9 +35,9 @@ namespace Suyaa.Sulang.Functions
         /// 创建执行器
         /// </summary>
         /// <returns></returns>
-        public override SuMethodInvoker CreateInvoker(IlMethod method)
+        public override SuMethodInvoker CreateInvoker(IlMethod method, SuParserCode code)
         {
-            return new SuStepInvoker(method, this);
+            return new SuStepInvoker(method, code, this);
         }
     }
 
@@ -51,8 +51,9 @@ namespace Suyaa.Sulang.Functions
         /// Su方法
         /// </summary>
         /// <param name="method"></param>
+        /// <param name="code"></param>
         /// <param name="step"></param>
-        public SuStepInvoker(IlMethod method, Step step) : base(method, step.Object, step.Name)
+        public SuStepInvoker(IlMethod method, SuParserCode code, Step step) : base(method, code, step.Object, step.Name)
         {
         }
 

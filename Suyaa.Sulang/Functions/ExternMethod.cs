@@ -32,7 +32,11 @@ namespace Suyaa.Sulang.Functions
             var typeCode = type.GetTypeCode();
             switch (typeCode)
             {
+                // 字符串
                 case TypeCode.String: this.Return(Suable.String); break;
+                // 整型
+                case TypeCode.Int32: this.Return(Suable.Int32); break;
+                // 对象
                 case TypeCode.Object:
                     if (type.FullName == "System.Void")
                     {
@@ -51,9 +55,9 @@ namespace Suyaa.Sulang.Functions
         /// 创建执行器
         /// </summary>
         /// <returns></returns>
-        public override SuMethodInvoker CreateInvoker(IlMethod method)
+        public override SuMethodInvoker CreateInvoker(IlMethod method, SuParserCode code)
         {
-            var invoker = new ExternMethodInvoker(method, this);
+            var invoker = new ExternMethodInvoker(method, code, this);
             invoker.Declares.AddRange(this.Declares);
             invoker.Keywords.AddRange(this.Keywords);
             invoker.Return(this.ReturnType);
@@ -70,8 +74,9 @@ namespace Suyaa.Sulang.Functions
         /// 外部函数执行器
         /// </summary>
         /// <param name="method"></param>
+        /// <param name="code"></param>
         /// <param name="externMethod"></param>
-        public ExternMethodInvoker(IlMethod method, ExternMethod externMethod) : base(method, externMethod.Object, externMethod.Name)
+        public ExternMethodInvoker(IlMethod method, SuParserCode code, ExternMethod externMethod) : base(method, code, externMethod.Object, externMethod.Name)
         {
         }
 
@@ -83,14 +88,14 @@ namespace Suyaa.Sulang.Functions
         {
             return this.ReturnType;
         }
-        
+
         /// <summary>
         /// 执行
         /// </summary>
         public override void Invoke()
         {
             base.Invoke();
-            if(this.ReturnType is SuVoid)
+            if (this.ReturnType is SuVoid)
             {
                 // 添加补码指令
                 IlMethod.Nop();

@@ -309,7 +309,7 @@ namespace Suyaa.Sulang
             {
                 if (_methodInfo is null) throw new SuCodeException(this.Method, $"Method info create fail.");
                 // 创建执行器
-                var invoker = _methodInfo.CreateInvoker(this.Parser.Project.Assembly.CurrentMethod);
+                var invoker = _methodInfo.CreateInvoker(this.Parser.Project.Assembly.CurrentMethod, this.Method);
                 foreach (var param in _paramters)
                 {
                     if (param is null) throw new SuCodeException(this.Method, $"Method paramter not found.");

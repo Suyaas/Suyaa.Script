@@ -8,19 +8,20 @@ using System.Text;
 using Suyaa.Msil.Values;
 using Suyaa.Msil.Types;
 using Suyaa.Sulang.Values;
+using Suyaa.Exceptions;
 
 namespace Suyaa.Sulang.Functions
 {
     /// <summary>
     /// 使用语句
     /// </summary>
-    public sealed class Set : SuMethodInfo
+    public sealed class Add : SuMethodInfo
     {
         /// <summary>
         /// 使用语句
         /// </summary>
         /// <param name="obj"></param>
-        public Set(ITypable obj) : base(obj, "Set")
+        public Add(ITypable obj) : base(obj, "Add")
         {
             this.Declare(new IlType(nameof(IlType)));
             this.Return(obj);
@@ -32,14 +33,14 @@ namespace Suyaa.Sulang.Functions
         /// <returns></returns>
         public override SuMethodInvoker CreateInvoker(IlMethod method, SuParserCode code)
         {
-            return new SetInvoker(method, code, this);
+            return new AddInvoker(method, code, this);
         }
     }
 
     /// <summary>
     /// Use方法执行器
     /// </summary>
-    public class SetInvoker : SuMethodInvoker
+    public class AddInvoker : SuMethodInvoker
     {
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace Suyaa.Sulang.Functions
         /// <param name="method"></param>
         /// <param name="code"></param>
         /// <param name="fun"></param>
-        public SetInvoker(IlMethod method, SuParserCode code, Set fun) : base(method, code, fun.Object, fun.Name)
+        public AddInvoker(IlMethod method, SuParserCode code, Add fun) : base(method, code, fun.Object, fun.Name)
         {
             this.Return(fun.Object);
         }
@@ -64,21 +65,24 @@ namespace Suyaa.Sulang.Functions
 
         private void SetFieldString(SuFieldValue field, ITypable value)
         {
+            // 添加对象
+            IlMethod.Ldloc_s(new IlName(field.Value.Name));
             switch (value)
             {
-                case SuValue<string> str:
-                    IlMethod.Ldstr(new IlValue<string>(str.Value));
-                    IlMethod.Stloc_s(new IlName(field.Value.Name));
+                case SuValue<int> val:
+                    IlMethod.Ldc_i4(val.Value);
                     break;
                 case SuStack _:
-                    IlMethod.Stloc_s(new IlName(field.Value.Name));
                     break;
                 case SuField suField:
                     IlMethod.Ldloc_s(new IlName(suField.Name));
-                    IlMethod.Stloc_s(new IlName(field.Value.Name));
                     break;
                 default: throw new SuCodeException(Code, $"Not supported type '{value.GetType().FullName}'");
             }
+            // 添加加法指令
+            IlMethod.Add();
+            // 添加计算返回
+            IlMethod.Stloc_s(new IlName(field.Value.Name));
         }
 
         /// <summary>
@@ -86,7 +90,7 @@ namespace Suyaa.Sulang.Functions
         /// </summary>
         public override void Invoke()
         {
-            if (this.Paramters.Count != 1) throw new SuCodeException(Code, $"Method invoke does not match Set(value)");
+            if (this.Paramters.Count != 1) throw new SuException($"Method invoke does not match {nameof(Add)}(value)");
             var obj = this.Object;
             switch (obj)
             {
@@ -94,7 +98,7 @@ namespace Suyaa.Sulang.Functions
                 case SuFieldValue suFieldValue:
                     SetFieldString(suFieldValue, this.Paramters[0]);
                     break;
-                default: throw new SuCodeException(Code, $"Method Set not supported object '{obj.GetType()}'");
+                default: throw new NotSupportedException($"Method {nameof(Add)} not supported object '{obj.GetType()}'");
             }
         }
     }
