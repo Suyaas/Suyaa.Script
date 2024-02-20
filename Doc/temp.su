@@ -1,39 +1,39 @@
-namespace(Su).notes("苏语言")
+namespace(Su, "苏语言")
 
-class(Example).notes("示例类")
+class(Example, "示例类")
 
-    function(Main).notes("主函数")
-        define(id:int).notes("标识符")
-        set(id, Add(1, 2))
-        define(cls:MyClass).notes("自定义类")
-        set(cls, call(MyClass.instance).parameters(id, "My Name").invoke())
-        call(System.Console.WriteLine).parameters(cls.GetName()).invoke()
+    function(Main, "主函数")
+        define(id:int, "标识符")
+        set(id, call(Add).parameter(1).parameter(2))
+        define(cls:MyClass, "自定义对象1")
+        set(
+            cls, 
+            call(MyClass.instance).parameter(id).parameter("My Name")
+        )
+        call(System.Console.WriteLine).parameter(join(cls.GetName(), ":", id))
+        if(large(id,0), call(), call())
 
-    function(Add:int).private().notes("计算算术和")
-        parameter(a:int).notes("加数")
-        parameter(b:int).notes("被加数")
-        define(c:int).notes("算术和")
-        set(c, !(a + b))
+    function(Add:int, "计算算术和").private()
+        parameter(a:int, "加数")
+        parameter(b:int, "被加数")
+        define(c:int, "算术和")
+        set(c, add(a, b))
         return(c)
 
-# 定义一个对象
-class(MyClass).public()
+class(MyClass, "自定义对象")
 
-    # 定义变量
-    define(
-        _id:int, 
-        _name:string,
-    ).private()
+    define(_id:int, "标识符").private()
+    define(_name:string, "名称").private()
 
-    # 定义构造函数
-    function().public().parameters(id:int, name:string)
+    function().public()
+        parameter(a:int, "标识符")
+        parameter(name:string, "名称")
         set(_id, id)
         set(_name, name)
     
-    # 获取名称
-    function(GetName:string).public()
+    function(GetName:string, "获取名称").public()
         return(_name)
 
-    # 设置名称
-    function(SetName).public().parameters(name:string)
+    function(SetName, "设置名称").public()
+        parameter(name:string, "名称")
         set(_name, name)
